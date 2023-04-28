@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('clubs', function (Blueprint $table) {
             $table->id();
             $table->string("nom_club");
-            $table->unsignedBigInteger("president_id");
-            $table->foreign("president_id")->references('id')->on('utilistateur')
+            $table->foreignId("president_id")->constrained('utilisateurs')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string("niveau");
