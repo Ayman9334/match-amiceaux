@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('match_notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('utilisateur_id')->constrained()
+            $table->foreignId('notifier_id')->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('lieu');

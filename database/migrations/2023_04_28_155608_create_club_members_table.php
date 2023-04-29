@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('club_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("member_id")->constrained('utilisateurs')
+            $table->foreignId("member_id")->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignId("club_id")->constrained("clubs")
