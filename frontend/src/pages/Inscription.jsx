@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { useEffect } from "react";
 
 const Inscription = () => {

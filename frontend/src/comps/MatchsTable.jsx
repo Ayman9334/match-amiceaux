@@ -1,4 +1,14 @@
+import { useEffect, useState } from "react"
+import axiosClient from "../api/axios-config";
+
 const MatchsTable = () => {
+    const [matchsdata, setMatchsdata] = useState([]);
+    const [err,seterr] =useState(false)
+    useEffect(() => {
+        axiosClient.get('/match')
+            .then(res => setMatchsdata(res.data))
+            .catch(() => seterr(true))
+    },[]);
     return (
         <div className="container">
             <div className="row">
@@ -10,7 +20,7 @@ const MatchsTable = () => {
                     >
                         <div className="inner" style={{ width: "100%" }}>
                             <table className="table" style={{ width: "100%" }}>
-                                <tbody>
+                                <thead>
                                     <tr>
                                         <th style={{ width: 150 }} scope="col">
                                             Date{" "}
@@ -63,9 +73,20 @@ const MatchsTable = () => {
                                         </th>
                                         <th style={{ width: 140 }} />
                                     </tr>
-                                    <tr>
-                                        <td colSpan={8}>Aucun match enregistré. </td>
-                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {matchsdata.map(match => <tr key={match.id}>
+                                        <td>{match.match_date}</td>
+                                        <td>{match.description}</td>
+                                        <td>{match.niveau}</td>
+                                        <td>{match.categorie}</td>
+                                        <td>not for now</td>
+                                        <td>{match.lieu}</td>
+                                        <td>x-x</td>
+                                    </tr>)}
+                                    {err && <tr>
+                                        <td colSpan={8}>nous avons un problème, veuillez réessayer plus tard</td>
+                                    </tr>}
                                 </tbody>
                             </table>
                         </div>

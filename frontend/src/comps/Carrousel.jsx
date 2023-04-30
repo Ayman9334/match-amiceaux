@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 const Carrousel = () => {
     return (<>
         {/* Web Ticker */}

@@ -170,12 +170,6 @@ const NavigationBar = () => {
                                     type="button"
                                     defaultValue="Se connecter"
                                 />
-                                <input
-                                    className="btn btn-danger"
-                                    type="button"
-                                    data-dismiss="modal"
-                                    defaultValue="Fermer"
-                                />
                             </form>
                         </div>
                     </div>
