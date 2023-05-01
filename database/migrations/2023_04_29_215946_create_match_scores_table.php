@@ -21,6 +21,8 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('equipe');
             $table->integer('date_but');
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

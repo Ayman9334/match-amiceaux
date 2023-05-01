@@ -21,6 +21,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string("member_role");
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
         DB::statement('ALTER TABLE club_members

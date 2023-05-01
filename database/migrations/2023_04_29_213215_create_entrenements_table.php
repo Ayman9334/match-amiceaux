@@ -19,6 +19,8 @@ return new class extends Migration
             $table->date('entrenement_date');
             $table->string('lieu');
             $table->longText('description');
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

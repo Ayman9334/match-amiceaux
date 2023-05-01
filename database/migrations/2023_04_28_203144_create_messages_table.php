@@ -18,6 +18,8 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->longText("contenu");
             $table->boolean("client_a_admin");
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

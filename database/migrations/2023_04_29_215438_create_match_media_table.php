@@ -18,6 +18,8 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('media');
             $table->string('media_type');
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

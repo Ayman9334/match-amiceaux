@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string("niveau");
             $table->string("ligue");
             $table->string("categorie");
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }
