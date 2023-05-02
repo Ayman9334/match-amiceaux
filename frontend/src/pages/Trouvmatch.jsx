@@ -5,7 +5,7 @@ import Galerie from "../comps/Galerie";
 const Trouvmatch = () => {
     useEffect(() => {
         window.effectCommands();
-    })
+    },[])
     return (
         <>
             <MatchsTable />

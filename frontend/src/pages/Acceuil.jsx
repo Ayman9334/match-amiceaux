@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 const Acceuil = () => {
     useEffect(() => {
         window.effectCommands();
-    })
+    },[])
     return (
         <>
             <Carrousel />

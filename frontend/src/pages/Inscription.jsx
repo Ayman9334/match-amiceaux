@@ -1,13 +1,35 @@
 /* eslint-disable react/no-unknown-property */
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import {
+    loadCaptchaEnginge,
+    LoadCanvasTemplate,
+    validateCaptcha
+} from 'react-simple-captcha';
+
+import {Link} from "react-router-dom"
 
 const Inscription = () => {
+    const capatchainp = useRef()
+
     useEffect(() => {
         window.effectCommands();
-    })
+        loadCaptchaEnginge(6);
+    }, [])
+
+    const doSubmit = () => {
+        if (validateCaptcha(capatchainp.current.value) == true) {
+            alert("Captcha Matched");
+            loadCaptchaEnginge(6);
+            capatchainp.current.value = "";
+        } else {
+            alert("Captcha Does Not Match");
+            capatchainp.current.value = "";
+        }
+    }
 
     return (
         <>
+            {/* Breadcrumb Area */}
             <section className="breadcrumb-area">
                 <div className="container">
                     <div className="row">
@@ -15,7 +37,7 @@ const Inscription = () => {
                             <div className="breadcrumb-box">
                                 <ul className="list-unstyled list-inline">
                                     <li className="list-inline-item">
-                                        <a href="#">Home</a> <i className="fa fa-angle-right" />
+                                        <Link href="#">Home</Link> <i className="fa fa-angle-right" />
                                     </li>
                                     <li className="list-inline-item">Contact</li>
                                 </ul>
@@ -24,8 +46,8 @@ const Inscription = () => {
                     </div>
                 </div>
             </section>
-            {/* End Breadcrumb Area */}
-            {/* News Area */}
+            
+            {/* inscription Area */}
             <section className="news-area">
                 <div className="container">
                     <div className="row" style={{ marginTop: 20 }}>
@@ -159,18 +181,6 @@ const Inscription = () => {
                                     defaultValue=""
                                 />
                             </div>
-                            {/* 		       <div class="form-group group"> */}
-                            {/*                     <label for="log-password2">* Région</label> */}
-                            {/*                     <select class="form-control" name="region_id" id="region_id" placeholder="Votre région"> */}
-                            {/*                     	<option value=""></option> */}
-                            {/*                     </select> */}
-                            {/*                   </div> */}
-                            {/*               <div class="form-group group"> */}
-                            {/*                 <label for="log-password2">* Département</label> */}
-                            {/*                 <select class="form-control" name="departement_id" id="departement_id" placeholder="Votre département"> */}
-                            {/*                 	<option value=""></option> */}
-                            {/*                 </select> */}
-                            {/*               </div> */}
                             <div className="form-group group">
                                 <label htmlFor="log-password2">
                                     Ville<span style={{ color: "orange" }}>*</span>
@@ -199,7 +209,7 @@ const Inscription = () => {
                             </div>
                             <hr />
                             <div className="form-group group">
-                                <div className="col-lg-6 col-md-6 col-sm-6">
+                                <div className="col-lg-6 col-md-12 col-sm-12">
                                     <label htmlFor="rf-password">
                                         Mot de passe<span style={{ color: "orange" }}>*</span>
                                     </label>
@@ -212,7 +222,7 @@ const Inscription = () => {
                                         defaultValue=""
                                     />
                                 </div>
-                                <div className="col-lg-6 col-md-6 col-sm-6">
+                                <div className="col-lg-6 col-md-12 col-sm-12">
                                     <label htmlFor="rf-password">
                                         Confirmation mot de passe
                                         <span style={{ color: "orange" }}>*</span>
@@ -231,27 +241,40 @@ const Inscription = () => {
                                 <label htmlFor="rf-password-repeat">
                                     Recopier le text suivant<span style={{ color: "orange" }}>*</span>
                                 </label>
-                                <div className="row" id="canvas_div">
+                                {/* <div className="row" id="canvas_div">
                                     <canvas id="canvas" style={{ float: "left" }} />
                                     <input
                                         className="form-control"
                                         name="code"
                                         style={{ width: 150 }}
                                     />
+                                </div> */}
+                                <div className="row">
+                                    <div className="col">
+                                        <LoadCanvasTemplate />
+                                    </div>
+                                    <div className="col-sm-12 col-md-6">
+                                        <input
+                                            ref={capatchainp}
+                                            placeholder="Enter Captcha"
+                                            className="form-control"
+                                            name="user_captcha_input"
+                                            type="text"
+                                        ></input>
+                                    </div>
                                 </div>
                             </div>
-                            {/* <div className="form-group group" style={{ marginLeft: 20 }}>
+                            <div className="form-group group" style={{ marginLeft: 20 }}>
                                 <div className="checkbox">
                                     <input
                                         type="checkbox"
                                         name="condition"
-                                        id="condition"
+                                        className="form-check-input"
                                         defaultValue="OK"
-                                        style={{ height: 30, width: 30, marginTop: "-3px" }}
                                     />
                                     <label> J&apos;accepte les conditions d&apos;utilisation</label>
                                 </div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                     <div className="row" style={{ paddingLeft: "25%" }}>
