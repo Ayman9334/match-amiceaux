@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TypeEnum extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        "libelle"
+    ];
 }

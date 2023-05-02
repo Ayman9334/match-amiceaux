@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TableMatchController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('/match', TableMatchController::class);
+
+Route::get('/matchenum', [UserController::class,"getenums"]);
 

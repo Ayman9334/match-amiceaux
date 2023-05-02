@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\TypeEnum;
+use App\Models\TypeEnumsDetail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,36 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/defaultdata', function () {
+    TypeEnum::create([
+        "libelle" => "categories"
+    ]);
+    return "done";
+});
+
+Route::get('/defaultdata2', function () {
+    for ($i = 6; $i <= 20; $i++) {
+        TypeEnumsDetail::insert([
+            [
+                "type_enum_id" => 1,
+                "libelle" => "U$i"
+            ], [
+                "type_enum_id" => 1,
+                "libelle" => "U$i Féminine"
+            ]
+        ]);
+    }
+    TypeEnumsDetail::insert([
+        [
+            "type_enum_id" => 1,
+            "libelle" => "Seniors"
+        ], [
+            "type_enum_id" => 1,
+            "libelle" => "Vétérans"
+        ]
+    ]);
+    
+    return "done";
 });

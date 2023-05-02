@@ -1,9 +1,3 @@
-/*!
- * jquery-captcha-lgh v1.0 (https://github.com/honguangli/jquery-captcha-lgh)
- * Copyright honguangli
- * Licensed under the MIT license
- */
-;
 let Captcha;
 (function($) {
   "use strict";
