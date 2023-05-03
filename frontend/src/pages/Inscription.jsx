@@ -7,6 +7,7 @@ import {
 } from 'react-simple-captcha';
 
 import {Link} from "react-router-dom"
+import axios from "axios";
 
 const Inscription = () => {
     const capatchainp = useRef()
@@ -14,6 +15,7 @@ const Inscription = () => {
     useEffect(() => {
         window.effectCommands();
         loadCaptchaEnginge(6);
+        // axios.get
     }, [])
 
     const doSubmit = () => {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TypeEnum;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -64,6 +65,13 @@ class UserController extends Controller
 
     public function getenums()
     {
-        //
+        function getEnumdetail($selectedEnum){
+            $enum = TypeEnum::where('code',$selectedEnum)->first();
+            return $enum->TypeEnumsDetails()->select('libelle', 'code')->get();
+        }
+
+        return [
+            "categories"=>getEnumdetail("cat"),
+        ];
     }
 }

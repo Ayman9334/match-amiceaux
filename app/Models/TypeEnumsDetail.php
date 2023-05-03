@@ -11,6 +11,8 @@ class TypeEnumsDetail extends Model
     protected $fillable = [
         "type_enum_id","libelle","code"
     ];
-
+    public function TypeEnum(){
+        return $this->belongsTo(TypeEnum::class);
+    }
 
 }

@@ -11,5 +11,7 @@ class TypeEnum extends Model
     protected $fillable = [
         "libelle","code"
     ];
-
+    public function TypeEnumsDetails(){
+        return $this->hasMany(TypeEnumsDetail::class);
+    }
 }

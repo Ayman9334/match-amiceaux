@@ -18,38 +18,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/defaultdata', function () {
-    TypeEnum::create([
-        "libelle" => "categories",
-        "code" => "cat",
-    ]);
-    return "done";
-});
-
-Route::get('/defaultdata2', function () {
-    for ($i = 6; $i <= 20; $i++) {
-        TypeEnumsDetail::create([
-            "type_enum_id" => 1,
-            "libelle" => "U$i Féminine",
-            "code" => "u$i" . "fcat",
-        ]);
-        TypeEnumsDetail::create([
-            "type_enum_id" => 1,
-            "libelle" => "U$i",
-            "code" => "u$i" . "cat",
-        ]);
-    }
-    TypeEnumsDetail::create([
-        "type_enum_id" => 1,
-        "libelle" => "Seniors",
-        "code" => "snrcat",
-    ]);
-    TypeEnumsDetail::create([
-        "type_enum_id" => 1,
-        "libelle" => "Vétérans",
-        "code" => "vtrcat",
-    ]);
-
-    return "done";
-});
