@@ -1,21 +1,28 @@
 /* eslint-disable react/no-unknown-property */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     loadCaptchaEnginge,
     LoadCanvasTemplate,
     validateCaptcha
 } from 'react-simple-captcha';
 
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import axios from "axios";
+import axiosClient from "../api/axios-config";
 
 const Inscription = () => {
-    const capatchainp = useRef()
+
+    const capatchainp = useRef();
+    const [enums, setEnums] = useState({});
 
     useEffect(() => {
         window.effectCommands();
+
         loadCaptchaEnginge(6);
-        // axios.get
+
+        axiosClient.get("/matchenum")
+            .then(res => setEnums(res.data))
+            .catch(err=> console.log(err))
     }, [])
 
     const doSubmit = () => {
@@ -48,7 +55,7 @@ const Inscription = () => {
                     </div>
                 </div>
             </section>
-            
+
             {/* inscription Area */}
             <section className="news-area">
                 <div className="container">
@@ -130,38 +137,11 @@ const Inscription = () => {
                                     placeholder="Vos catégories"
                                 >
                                     <option value="" />
-                                    <option value={2}>Seniors</option>
-                                    <option value={13}>U10</option>
-                                    <option value={28}>U10 Féminine</option>
-                                    <option value={12}>U11</option>
-                                    <option value={27}>U11 Féminine</option>
-                                    <option value={11}>U12</option>
-                                    <option value={26}>U12 Féminine</option>
-                                    <option value={10}>U13</option>
-                                    <option value={25}>U13 Féminine</option>
-                                    <option value={9}>U14</option>
-                                    <option value={24}>U14 Féminine</option>
-                                    <option value={8}>U15</option>
-                                    <option value={23}>U15 Féminine</option>
-                                    <option value={7}>U16</option>
-                                    <option value={22}>U16 Féminine</option>
-                                    <option value={6}>U17</option>
-                                    <option value={21}>U17 Féminine</option>
-                                    <option value={5}>U18</option>
-                                    <option value={20}>U18 Féminine</option>
-                                    <option value={4}>U19</option>
-                                    <option value={19}>U19 Féminine</option>
-                                    <option value={3}>U20</option>
-                                    <option value={18}>U20 Féminine</option>
-                                    <option value={17}>U6</option>
-                                    <option value={32}>U6 Féminine</option>
-                                    <option value={16}>U7</option>
-                                    <option value={31}>U7 Féminine</option>
-                                    <option value={15}>U8</option>
-                                    <option value={30}>U8 Féminine</option>
-                                    <option value={14}>U9</option>
-                                    <option value={29}>U9 Féminine</option>
-                                    <option value={1}>Vétérans</option>
+                                    {enums.categories&&
+                                        enums.categories.map(x=>
+                                            <option key={x.code} value={x.libelle}>{x.libelle}</option>
+                                        )
+                                    }
                                 </select>
                             </div>
                         </div>
