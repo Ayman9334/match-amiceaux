@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId("type_enum_id")->constrained();
             $table->string("libelle");
+            $table->string("code")->unique();
             $table->foreignId('createur_id')->nullable()->constrained('users');
             $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();

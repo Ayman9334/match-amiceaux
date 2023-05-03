@@ -9,6 +9,7 @@ class TypeEnum extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "libelle"
+        "libelle","code"
     ];
+
 }

@@ -9,6 +9,8 @@ class TypeEnumsDetail extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "type_enum_id","libelle"
+        "type_enum_id","libelle","code"
     ];
+
+
 }

@@ -21,32 +21,35 @@ Route::get('/', function () {
 
 Route::get('/defaultdata', function () {
     TypeEnum::create([
-        "libelle" => "categories"
+        "libelle" => "categories",
+        "code" => "cat",
     ]);
     return "done";
 });
 
 Route::get('/defaultdata2', function () {
     for ($i = 6; $i <= 20; $i++) {
-        TypeEnumsDetail::insert([
-            [
-                "type_enum_id" => 1,
-                "libelle" => "U$i"
-            ], [
-                "type_enum_id" => 1,
-                "libelle" => "U$i Féminine"
-            ]
+        TypeEnumsDetail::create([
+            "type_enum_id" => 1,
+            "libelle" => "U$i Féminine",
+            "code" => "u$i" . "fcat",
+        ]);
+        TypeEnumsDetail::create([
+            "type_enum_id" => 1,
+            "libelle" => "U$i",
+            "code" => "u$i" . "cat",
         ]);
     }
-    TypeEnumsDetail::insert([
-        [
-            "type_enum_id" => 1,
-            "libelle" => "Seniors"
-        ], [
-            "type_enum_id" => 1,
-            "libelle" => "Vétérans"
-        ]
+    TypeEnumsDetail::create([
+        "type_enum_id" => 1,
+        "libelle" => "Seniors",
+        "code" => "snrcat",
     ]);
-    
+    TypeEnumsDetail::create([
+        "type_enum_id" => 1,
+        "libelle" => "Vétérans",
+        "code" => "vtrcat",
+    ]);
+
     return "done";
 });

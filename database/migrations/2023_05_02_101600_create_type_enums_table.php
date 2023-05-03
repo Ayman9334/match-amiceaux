@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('type_enums', function (Blueprint $table) {
             $table->id();
             $table->string("libelle");
+            $table->string("code")->unique();
             $table->foreignId('createur_id')->nullable()->constrained('users');
             $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
