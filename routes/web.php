@@ -2,6 +2,7 @@
 
 use App\Models\TypeEnum;
 use App\Models\TypeEnumsDetail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*

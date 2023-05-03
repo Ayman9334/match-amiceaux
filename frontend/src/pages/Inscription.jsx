@@ -13,7 +13,10 @@ const Inscription = () => {
 
     const capatchaInp = useRef();
     const conditionsInp = useRef();
-    const [enums, setEnums] = useState({ categories: [] });
+    const [enums, setEnums] = useState({
+        categories: [],
+        niveau: [],
+    });
     const [formdata, setFormdata] = useState({
         nom: '',
         email: '',
@@ -176,14 +179,14 @@ const Inscription = () => {
                                     <Select
                                         name="niveau"
                                         id="niveau"
-                                        options={enums.categories}
+                                        options={enums.niveau}
                                         className="basic-single"
                                         classNamePrefix="select-niv"
                                         onChange={setSelectData}
                                         placeholder="Votre categories"
                                     />
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-sm-6">

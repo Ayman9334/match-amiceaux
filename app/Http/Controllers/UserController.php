@@ -72,6 +72,7 @@ class UserController extends Controller
 
         return [
             "categories"=>getEnumdetail("cat"),
+            "niveau"=>getEnumdetail("niv"),
         ];
     }
 }

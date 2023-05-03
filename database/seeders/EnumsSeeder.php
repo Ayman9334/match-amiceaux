@@ -18,6 +18,10 @@ class EnumsSeeder extends Seeder
             "libelle" => "categories",
             "code" => "cat",
         ]);
+        TypeEnum::create([
+            "libelle" => "niveau",
+            "code" => "niv",
+        ]);
         for ($i = 6; $i <= 20; $i++) {
             TypeEnumsDetail::create([
                 "type_enum_id" => 1,
@@ -40,5 +44,13 @@ class EnumsSeeder extends Seeder
             "libelle" => "Vétérans",
             "code" => "vtrcat",
         ]);
+
+        foreach (["A1", "A2", "B1", "B2", "C1", "C2"] as $nv) {
+            TypeEnumsDetail::create([
+                "type_enum_id" => 2,
+                "libelle" => $nv,
+                "code" => $nv,
+            ]);
+        }
     }
 }
