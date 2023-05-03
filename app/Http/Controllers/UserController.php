@@ -67,7 +67,7 @@ class UserController extends Controller
     {
         function getEnumdetail($selectedEnum){
             $enum = TypeEnum::where('code',$selectedEnum)->first();
-            return $enum->TypeEnumsDetails()->select('libelle', 'code')->get();
+            return $enum->TypeEnumsDetails()->select('libelle as label', 'code as value')->get();
         }
 
         return [

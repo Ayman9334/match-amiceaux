@@ -21,13 +21,13 @@ class EnumsSeeder extends Seeder
         for ($i = 6; $i <= 20; $i++) {
             TypeEnumsDetail::create([
                 "type_enum_id" => 1,
-                "libelle" => "U$i Féminine",
-                "code" => "u$i" . "fcat",
+                "libelle" => "U$i",
+                "code" => "u$i" . "cat",
             ]);
             TypeEnumsDetail::create([
                 "type_enum_id" => 1,
-                "libelle" => "U$i",
-                "code" => "u$i" . "cat",
+                "libelle" => "U$i Féminine",
+                "code" => "u$i" . "fcat",
             ]);
         }
         TypeEnumsDetail::create([

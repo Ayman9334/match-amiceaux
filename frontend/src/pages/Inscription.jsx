@@ -1,19 +1,34 @@
-/* eslint-disable react/no-unknown-property */
+
 import { useEffect, useRef, useState } from "react";
 import {
     loadCaptchaEnginge,
     LoadCanvasTemplate,
     validateCaptcha
 } from 'react-simple-captcha';
-
 import { Link } from "react-router-dom"
-import axios from "axios";
 import axiosClient from "../api/axios-config";
+import Select from 'react-select';
 
 const Inscription = () => {
 
-    const capatchainp = useRef();
-    const [enums, setEnums] = useState({});
+    const capatchaInp = useRef();
+    const conditionsInp = useRef();
+    const [enums, setEnums] = useState({ categories: [] });
+    const [formdata, setFormdata] = useState({
+        nom: '',
+        email: '',
+        email_confirmation: '',
+        password: '',
+        password_confirmation: '',
+        n_telephone: '',
+        code_postal: '',
+        ville: '',
+        region: '',
+        adresse: '',
+        niveau: '',
+        categorie: [],
+        league: '',
+    })
 
     useEffect(() => {
         window.effectCommands();
@@ -22,18 +37,34 @@ const Inscription = () => {
 
         axiosClient.get("/matchenum")
             .then(res => setEnums(res.data))
-            .catch(err=> console.log(err))
+            .catch(err => console.log(err))
     }, [])
 
+    const setInpData = (e) => setFormdata({
+        ...formdata,
+        [e.target.name]: e.target.value,
+    })
+
+    const setSelectData = (e, choices) => {
+        setFormdata({
+            ...formdata,
+            [choices.name]: e.value,
+        })
+    }
+
     const doSubmit = () => {
-        if (validateCaptcha(capatchainp.current.value) == true) {
+        if (validateCaptcha(capatchaInp.current.value) == true) {
             alert("Captcha Matched");
             loadCaptchaEnginge(6);
-            capatchainp.current.value = "";
+            capatchaInp.current.value = "";
         } else {
             alert("Captcha Does Not Match");
-            capatchainp.current.value = "";
+            capatchaInp.current.value = "";
         }
+    }
+
+    const submitData = () => {
+        //
     }
 
     return (
@@ -66,110 +97,104 @@ const Inscription = () => {
                         >
                             <h2>Informations personnelle</h2>
                             <div className="form-group group">
-                                <label htmlFor="log-password2">
+                                <label htmlFor="nom">
                                     Nom ou prénom visible dans la liste des matchs
                                     <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
-                                    name="nom_reel"
-                                    id="nom_reel"
-                                    style={{ width: "70%" }}
+                                    id="nom"
+                                    className="form-control w-75"
+                                    name="nom"
                                     placeholder="Nom ou prénom visible"
-                                    defaultValue=""
+                                    onChange={setInpData}
                                 />
                             </div>
                             <div className="form-group group">
-                                <label htmlFor="rf-email">
+                                <label htmlFor="email">
                                     Identifiant de connexion<span style={{ color: "orange" }}>*</span>
                                     <span style={{ fontSize: 12, color: "gray" }}>(votre Email)</span>
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
-                                    name="mail"
-                                    id="mail"
-                                    style={{ width: "70%" }}
+                                    className="form-control w-75"
+                                    name="email"
+                                    id="email"
                                     placeholder="Votre mail"
-                                    defaultValue=""
+                                    onChange={setInpData}
                                 />
                             </div>
                             <div className="form-group group">
-                                <label htmlFor="rf-password">
+                                <label htmlFor="emailConfirm">
                                     Confirmer Email<span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
-                                    name="mail_confirm"
-                                    id="mail_confirm"
-                                    style={{ width: "70%" }}
+                                    className="form-control w-75"
+                                    name="email_confirmation"
+                                    id="emailConfirm"
                                     placeholder="Confirmation mail"
-                                    defaultValue=""
+                                    onChange={setInpData}
                                 />
                             </div>
                             <div className="form-group group">
-                                <label htmlFor="rf-email">Téléphone portable</label>
+                                <label htmlFor="telephone">Téléphone portable</label>
                                 <input
                                     type="text"
-                                    className="form-control"
-                                    name="portable"
-                                    id="portable"
-                                    // eslint-disable-next-line react/no-unknown-property
-                                    phone={1}
-                                    style={{ width: "50%" }}
+                                    className="form-control w-50"
+                                    name="n_telephone"
+                                    id="telephone"
                                     placeholder="Votre portable"
-                                    defaultValue=""
+                                    onChange={setInpData}
                                 />
                             </div>
-                            <div className="form-group group">
-                                <label htmlFor="rf-email">
-                                    Quand un nouveau match est créé, si vos catégories sont les mêmes
-                                    que le match vous recevez un email
+
+                            <div className="form-group group row">
+                                <p className="font-weight-bold py-2 col-12">
+                                    Lorsqu'un nouveau match est créé, si ces informations
+                                    ci-dessous sont les mêmes que le match, vous recevez un e-mail
                                     <span style={{ color: "orange" }}>*</span>
-                                </label>
-                                <select
-                                    className="form-control"
-                                    name="categories[]"
-                                    id="categories"
-                                    multiple="multiple"
-                                    placeholder="Vos catégories"
-                                >
-                                    <option value="" />
-                                    {enums.categories&&
-                                        enums.categories.map(x=>
-                                            <option key={x.code} value={x.libelle}>{x.libelle}</option>
-                                        )
-                                    }
-                                </select>
+                                </p>
+                                <div className="form-group group col-lg-6 col-12">
+                                    <label htmlFor="categories">
+                                        Categories :
+                                    </label>
+                                    <Select
+                                        name="categorie"
+                                        id="categories"
+                                        options={enums.categories}
+                                        className="basic-single"
+                                        classNamePrefix="select-cat"
+                                        onChange={setSelectData}
+                                        placeholder="Votre categories"
+                                    />
+                                </div>
+                                <div className="form-group group col-lg-6 col-12">
+                                    <label htmlFor="niveau">
+                                        Niveau :
+                                    </label>
+                                    <Select
+                                        name="niveau"
+                                        id="niveau"
+                                        options={enums.categories}
+                                        className="basic-single"
+                                        classNamePrefix="select-niv"
+                                        onChange={setSelectData}
+                                        placeholder="Votre categories"
+                                    />
+                                </div>
+                                
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-sm-6">
                             <h2>Informations générales</h2>
-                            <div className="form-group group">
-                                <label htmlFor="log-email2">
-                                    Nom réel du club <span style={{ color: "orange" }}>*</span>
-                                    <span style={{ fontSize: 12, color: "gray" }}>
-                                        (Pas le nom de la ville)
-                                    </span>
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="nom_club"
-                                    id="nom_club"
-                                    placeholder="Nom du club"
-                                    defaultValue=""
-                                />
-                            </div>
                             <div className="form-group group">
                                 <label htmlFor="log-password2">
                                     Ville<span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className="form-control w-50"
                                     name="villeRefAuto"
                                     id="villeRefAuto"
                                     autoComplete="off"
@@ -179,12 +204,27 @@ const Inscription = () => {
                                 <div id="ville_lib" />
                             </div>
                             <div className="form-group group">
-                                <label htmlFor="log-password2">Addresse</label>
+                                <label htmlFor="zipcode">
+                                    Code postale :<span style={{ color: "orange" }}>*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control w-50"
+                                    name="code_postal"
+                                    id="zipcode"
+                                    placeholder="Votre zip code"
+                                    onChange={setInpData}
+                                />
+                            </div>
+
+                            <div className="form-group group">
+                                <label htmlFor="log-password2">
+                                    Addresse<span style={{ color: "orange" }}>*</span>
+                                </label>
                                 <textarea
-                                    className="form-control"
+                                    className="form-control w-75"
                                     name="adresse"
                                     id="adresse"
-                                    style={{ width: "70%" }}
                                     placeholder="Adresse"
                                     defaultValue={" "}
                                 />
@@ -237,7 +277,7 @@ const Inscription = () => {
                                     </div>
                                     <div className="col-sm-12 col-md-6">
                                         <input
-                                            ref={capatchainp}
+                                            ref={capatchaInp}
                                             placeholder="Enter Captcha"
                                             className="form-control"
                                             name="user_captcha_input"
@@ -250,9 +290,9 @@ const Inscription = () => {
                                 <div className="checkbox">
                                     <input
                                         type="checkbox"
+                                        ref={conditionsInp}
                                         name="condition"
                                         className="form-check-input"
-                                        defaultValue="OK"
                                     />
                                     <label> J&apos;accepte les conditions d&apos;utilisation</label>
                                 </div>
@@ -263,16 +303,8 @@ const Inscription = () => {
                         <input
                             className="btn btn-success"
                             type="button"
-                            id="validate_cpt"
-                            eval="resetForm('registr-form')"
-                            defaultValue="Créer mon compte"
-                        />
-                        <input
-                            type="button"
-                            id="validate_cpt2"
-                            style={{ display: "none" }}
-                            targetdiv="regiter_div"
-                            wact="YWRtaW4udXNlci5tZXJnZS4w"
+                            onClick={submitData}
+                            value="Créer mon compte"
                         />
                     </div>
                 </div>
