@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import {
     loadCaptchaEnginge,
@@ -170,7 +169,7 @@ const Inscription = () => {
 
                             <div className="form-group group row">
                                 <p className="font-weight-bold py-2 col-12">
-                                    Lorsqu'un nouveau match est créé, si ces informations
+                                    Lorsqu&apos;un nouveau match est créé, si ces informations
                                     ci-dessous sont les mêmes que le match, vous recevez un e-mail
                                     <span style={{ color: "orange" }}>*</span>
                                 </p>
