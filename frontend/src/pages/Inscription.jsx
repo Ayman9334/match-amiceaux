@@ -13,10 +13,14 @@ const Inscription = () => {
 
     const capatchaInp = useRef();
     const conditionsInp = useRef();
+
     const [enums, setEnums] = useState({
         categories: [],
-        niveau: [],
+        niveaus: [],
+        regions: [],
+        leagues:[],
     });
+
     const [formdata, setFormdata] = useState({
         nom: '',
         email: '',
@@ -29,8 +33,9 @@ const Inscription = () => {
         region: '',
         adresse: '',
         niveau: '',
-        categorie: [],
+        categorie: '',
         league: '',
+        conditions : false,
     })
 
     useEffect(() => {
@@ -55,19 +60,30 @@ const Inscription = () => {
         })
     }
 
+    const setCheckboxData = (e) => setFormdata({
+        ...formdata,
+        [e.target.name]: e.target.checked,
+    })
+
+    const refreshCapatcha = () =>{
+        loadCaptchaEnginge(6);
+        capatchaInp.current.value = "";
+    }
     const doSubmit = () => {
-        if (validateCaptcha(capatchaInp.current.value) == true) {
-            alert("Captcha Matched");
-            loadCaptchaEnginge(6);
-            capatchaInp.current.value = "";
+        if (validateCaptcha(capatchaInp.current.value) === true) {
+            refreshCapatcha();
+            return true
         } else {
             alert("Captcha Does Not Match");
-            capatchaInp.current.value = "";
+            refreshCapatcha();
         }
     }
 
     const submitData = () => {
-        //
+        if (doSubmit()){
+            //
+
+        }
     }
 
     return (
@@ -167,45 +183,67 @@ const Inscription = () => {
                                         id="categories"
                                         options={enums.categories}
                                         className="basic-single"
-                                        classNamePrefix="select-cat"
                                         onChange={setSelectData}
                                         placeholder="Votre categories"
                                     />
                                 </div>
                                 <div className="form-group group col-lg-6 col-12">
-                                    <label htmlFor="niveau">
+                                    <label htmlFor="niveaus">
                                         Niveau :
                                     </label>
                                     <Select
                                         name="niveau"
-                                        id="niveau"
-                                        options={enums.niveau}
+                                        id="niveaus"
+                                        options={enums.niveaus}
                                         className="basic-single"
-                                        classNamePrefix="select-niv"
                                         onChange={setSelectData}
-                                        placeholder="Votre categories"
+                                        placeholder="Votre niveau"
                                     />
                                 </div>
-
+                                <div className="form-group group col-lg-6 col-12">
+                                    <label htmlFor="leagues">
+                                        League :
+                                    </label>
+                                    <Select
+                                        name="league"
+                                        id="leagues"
+                                        options={enums.leagues}
+                                        className="basic-single"
+                                        onChange={setSelectData}
+                                        placeholder="Votre league"
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-sm-6">
                             <h2>Informations générales</h2>
                             <div className="form-group group">
-                                <label htmlFor="log-password2">
-                                    Ville<span style={{ color: "orange" }}>*</span>
+                                <label htmlFor="villes">
+                                    Ville :<span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control w-50"
-                                    name="villeRefAuto"
-                                    id="villeRefAuto"
-                                    autoComplete="off"
+                                    name="ville"
+                                    id="villes"
                                     placeholder="Votre ville"
-                                    defaultValue=""
+                                    onChange={setInpData}
                                 />
                                 <div id="ville_lib" />
                             </div>
+                            <div className="form-group group ">
+                                    <label htmlFor="regions">
+                                        Region :<span style={{ color: "orange" }}>*</span>
+                                    </label>
+                                    <Select
+                                        name="region"
+                                        id="regions"
+                                        options={enums.regions}
+                                        className="basic-single w-50"
+                                        onChange={setSelectData}
+                                        placeholder="Votre region"
+                                    />
+                                </div>
                             <div className="form-group group">
                                 <label htmlFor="zipcode">
                                     Code postale :<span style={{ color: "orange" }}>*</span>
@@ -221,44 +259,46 @@ const Inscription = () => {
                             </div>
 
                             <div className="form-group group">
-                                <label htmlFor="log-password2">
-                                    Addresse<span style={{ color: "orange" }}>*</span>
+                                <label htmlFor="adresses">
+                                    Addresse :<span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <textarea
                                     className="form-control w-75"
                                     name="adresse"
-                                    id="adresse"
+                                    id="adresses"
                                     placeholder="Adresse"
-                                    defaultValue={" "}
+                                    onChange={setInpData}
                                 />
                             </div>
                             <hr />
                             <div className="form-group group">
                                 <div className="col-lg-6 col-md-12 col-sm-12">
-                                    <label htmlFor="rf-password">
-                                        Mot de passe<span style={{ color: "orange" }}>*</span>
+                                    <label htmlFor="pw">
+                                        Mot de passe :<span style={{ color: "orange" }}>*</span>
                                     </label>
                                     <input
                                         type="password"
                                         className="form-control"
-                                        name="pw"
+                                        name="password"
                                         id="pw"
                                         placeholder="Votre mot de passe"
+                                        onChange={setInpData}
                                         defaultValue=""
                                     />
                                 </div>
                                 <div className="col-lg-6 col-md-12 col-sm-12">
-                                    <label htmlFor="rf-password">
-                                        Confirmation mot de passe
+                                    <label htmlFor="pwc">
+                                        Confirmation mot de passe :
                                         <span style={{ color: "orange" }}>*</span>
                                     </label>
                                     <input
                                         type="password"
                                         className="form-control"
-                                        name="pw_confirm"
-                                        id="pw_confirm"
+                                        name="password_confirmation"
+                                        id="pwc"
                                         placeholder="Confirmation"
                                         defaultValue=""
+                                        onChange={setInpData}
                                     />
                                 </div>
                             </div>
@@ -294,7 +334,9 @@ const Inscription = () => {
                                     <input
                                         type="checkbox"
                                         ref={conditionsInp}
-                                        name="condition"
+                                        name="conditions"
+                                        value="checked"
+                                        onChange={setCheckboxData}
                                         className="form-check-input"
                                     />
                                     <label> J&apos;accepte les conditions d&apos;utilisation</label>
@@ -302,7 +344,7 @@ const Inscription = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row" style={{ paddingLeft: "25%" }}>
+                    <div className="d-flex justify-content-center py-4">
                         <input
                             className="btn btn-success"
                             type="button"

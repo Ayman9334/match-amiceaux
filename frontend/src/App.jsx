@@ -3,6 +3,7 @@ import LayoutPrincipal from './templates/LayoutPrincipal';
 import Acceuil from './pages/Acceuil';
 import Inscription from './pages/Inscription';
 import Trouvmatch from './pages/trouvmatch';
+import Nopage from './pages/Nopage';
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
           <Route path='/inscription' element={<Inscription />} />
           <Route path='/trouve-match' element={<Trouvmatch />} />
         </Route>
-        <Route path='*' element={<Navigate to='/' />}/>
+        <Route path='*' element={<Nopage />}/>
       </Routes>
     </BrowserRouter>
   )

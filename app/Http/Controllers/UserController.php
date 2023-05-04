@@ -72,7 +72,9 @@ class UserController extends Controller
 
         return [
             "categories"=>getEnumdetail("cat"),
-            "niveau"=>getEnumdetail("niv"),
+            "niveaus"=>getEnumdetail("niv"),
+            "regions"=>getEnumdetail("reg"),
+            "leagues"=>getEnumdetail("lg")
         ];
     }
 }

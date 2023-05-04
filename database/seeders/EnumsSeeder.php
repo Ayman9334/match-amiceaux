@@ -15,13 +15,24 @@ class EnumsSeeder extends Seeder
     public function run(): void
     {
         TypeEnum::create([
-            "libelle" => "categories",
+            "libelle" => "catégories",
             "code" => "cat",
         ]);
         TypeEnum::create([
-            "libelle" => "niveau",
+            "libelle" => "niveaus",
             "code" => "niv",
         ]);
+        TypeEnum::create([
+            "libelle" => "régions",
+            "code" => "reg",
+        ]);
+
+        TypeEnum::create([
+            "libelle" => "ligues",
+            "code" => "lg",
+        ]);
+
+
         for ($i = 6; $i <= 20; $i++) {
             TypeEnumsDetail::create([
                 "type_enum_id" => 1,
@@ -45,12 +56,56 @@ class EnumsSeeder extends Seeder
             "code" => "vtrcat",
         ]);
 
-        foreach (["A1", "A2", "B1", "B2", "C1", "C2"] as $nv) {
+        foreach (["A1", "A2", "B1", "B2", "C1", "C2"] as $niveau) {
             TypeEnumsDetail::create([
                 "type_enum_id" => 2,
-                "libelle" => $nv,
-                "code" => $nv,
+                "libelle" => $niveau,
+                "code" => $niveau,
             ]);
         }
+
+        $regions = [
+            'Auvergne-Rhône-Alpes' => 'ARAreg',
+            'Bourgogne-Franche-Comté' => 'BFCreg',
+            'Bretagne' => 'BREreg',
+            'Centre-Val de Loire' => 'CVLreg',
+            'Corse' => 'CORreg',
+            'Grand Est' => 'GESreg',
+            'Hauts-de-France' => 'HDFreg',
+            'Île-de-France' => 'IDFreg',
+            'Normandie' => 'NORreg',
+            'Nouvelle-Aquitaine' => 'NAQreg',
+            'Occitanie' => 'OCCreg',
+            'Pays de la Loire' => 'PDLreg',
+            'Provence-Alpes-Côte d\'Azur' => 'PACreg',
+        ];
+
+        foreach($regions as $region => $code){
+            TypeEnumsDetail::create([
+                "type_enum_id" => 3,
+                "libelle" => $region,
+                "code" => $code,
+            ]);
+        }
+
+        $leagues = [
+            'Ligue 1' => 'L1',
+            'Ligue 2' => 'L2',
+            'National 1' => 'N1',
+            'National 2' => 'N2',
+            'National 3' => 'N3',
+            'Coupe de France' => 'CDF',
+            'Coupe de la Ligue' => 'CDL',
+            'Trophée des Champions' => 'TDC',
+        ];
+
+        foreach($leagues as $league => $code){
+            TypeEnumsDetail::create([
+                "type_enum_id" => 4,
+                "libelle" => $league,
+                "code" => $code,
+            ]);
+        }
+
     }
 }
