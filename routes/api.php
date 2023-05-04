@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('/match', TableMatchController::class);
 
 Route::get('/matchenum', [UserController::class,"getenums"]);
+
 Route::get('/us', function(){
     return User::first();
 });

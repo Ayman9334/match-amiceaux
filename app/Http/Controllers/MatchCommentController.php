@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Match_comment;
+use App\Models\MatchComment;
 use Illuminate\Http\Request;
 
 class MatchCommentController extends Controller
@@ -34,7 +34,7 @@ class MatchCommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Match_comment $match_comment)
+    public function show(MatchComment $match_comment)
     {
         //
     }
@@ -42,7 +42,7 @@ class MatchCommentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Match_comment $match_comment)
+    public function edit(MatchComment $match_comment)
     {
         //
     }
@@ -50,7 +50,7 @@ class MatchCommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Match_comment $match_comment)
+    public function update(Request $request, MatchComment $match_comment)
     {
         //
     }
@@ -58,7 +58,7 @@ class MatchCommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Match_comment $match_comment)
+    public function destroy(MatchComment $match_comment)
     {
         //
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Table_match;
+use App\Models\TableMatch;
 use Illuminate\Http\Request;
 
 class TableMatchController extends Controller
@@ -13,7 +13,7 @@ class TableMatchController extends Controller
     public function index()
     {
         // $data = Table_matche::all();
-        return Table_match::all();
+        return TableMatch::all();
     }
 
     /**
@@ -35,7 +35,7 @@ class TableMatchController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(table_match $table_matche)
+    public function show(TableMatch $table_matche)
     {
         //
     }
@@ -43,7 +43,7 @@ class TableMatchController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(table_match $table_matche)
+    public function edit(TableMatch $table_matche)
     {
         //
     }
@@ -51,7 +51,7 @@ class TableMatchController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, table_match $table_matche)
+    public function update(Request $request, TableMatch $table_matche)
     {
         //
     }
@@ -59,7 +59,7 @@ class TableMatchController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(table_match $table_matche)
+    public function destroy(TableMatch $table_matche)
     {
         //
     }

@@ -34,7 +34,7 @@ class EntrenementsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(entrenements $entrenements)
+    public function show(Entrenements $entrenements)
     {
         //
     }
@@ -42,7 +42,7 @@ class EntrenementsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(entrenements $entrenements)
+    public function edit(Entrenements $entrenements)
     {
         //
     }
@@ -50,7 +50,7 @@ class EntrenementsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, entrenements $entrenements)
+    public function update(Request $request, Entrenements $entrenements)
     {
         //
     }
@@ -58,7 +58,7 @@ class EntrenementsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(entrenements $entrenements)
+    public function destroy(Entrenements $entrenements)
     {
         //
     }
