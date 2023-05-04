@@ -6,8 +6,6 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\TypeEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -37,19 +35,22 @@ class UserController extends Controller
         $newUser = User::create([
             'nom' => $request->nom,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
             'n_telephone' => $request->n_telephone,
             'code_postal' => $request->code_postal,
             'ville' => $request->ville,
             'region' => $request->region,
-            '' => $request->,
-            '' => $request->,
-            '' => $request->,
-            '' => $request->,
+            'adresse' => $request->adresse,
+            'niveau' => $request->niveau,
+            'categorie' => $request->categorie,
+            'league' => $request->league,
         ]);
-
-        
-        return '';
+        $token = $newUser->createToken('user_token')->plainTextToken;
+        $response = [
+            'user' => $newUser,
+            'token' => $token
+        ];
+        return response($response,201);
     }
 
     /**

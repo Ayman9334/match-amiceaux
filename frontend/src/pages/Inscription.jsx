@@ -12,12 +12,12 @@ const Inscription = () => {
 
     const capatchaInp = useRef();
     const conditionsInp = useRef();
-
+    const alertelm = useRef()
     const [enums, setEnums] = useState({
         categories: [],
         niveaus: [],
         regions: [],
-        leagues:[],
+        leagues: [],
     });
 
     const [formdata, setFormdata] = useState({
@@ -34,8 +34,10 @@ const Inscription = () => {
         niveau: '',
         categorie: '',
         league: '',
-        conditions : false,
+        conditions: false,
     })
+
+    const [errmessages, seterrmessages] = useState([]);
 
     useEffect(() => {
         window.effectCommands();
@@ -64,7 +66,7 @@ const Inscription = () => {
         [e.target.name]: e.target.checked,
     })
 
-    const refreshCapatcha = () =>{
+    const refreshCapatcha = () => {
         loadCaptchaEnginge(6);
         capatchaInp.current.value = "";
     }
@@ -73,18 +75,28 @@ const Inscription = () => {
             refreshCapatcha();
             return true
         } else {
-            alert("Captcha Does Not Match");
+            seterrmessages(["Captcha Does Not Match"]);
             refreshCapatcha();
+            alertelm.current.scrollIntoView({ behavior: 'smooth' });
         }
     }
 
     const submitData = () => {
-        if (doSubmit()){
-            //
-
+        if (doSubmit()) {
+            axiosClient.post('/user', formdata)
+                .then(() => {
+                    console.log('done')
+                    seterrmessages([])
+                })
+                .catch(err => {
+                    const response = err.response;
+                    if (response && response.status === 422) {
+                        seterrmessages(Object.values(response.data.errors))
+                        alertelm.current.scrollIntoView({ behavior: 'smooth' });
+                    }
+                })
         }
     }
-
     return (
         <>
             {/* Breadcrumb Area */}
@@ -95,19 +107,35 @@ const Inscription = () => {
                             <div className="breadcrumb-box">
                                 <ul className="list-unstyled list-inline">
                                     <li className="list-inline-item">
-                                        <Link href="#">Home</Link> <i className="fa fa-angle-right" />
+                                        <Link href="/">Home</Link> <i className="fa fa-angle-right" />
                                     </li>
-                                    <li className="list-inline-item">Contact</li>
+                                    <li className="list-inline-item">Compte</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-
             {/* inscription Area */}
             <section className="news-area">
                 <div className="container">
+                    <div ref={alertelm} className="py-2">
+                        {
+                            (errmessages.length > 3) ? (
+                                <div className="alert alert-danger">
+                                    {errmessages.slice(0,4).map((value, index) => <p key={`${index}errmessage`}>{value}</p>)}
+                                    <p>...</p>
+                                </div>
+                            ) : (errmessages.length > 0)&&(
+                                <div className="alert alert-danger">
+                                    {errmessages.map((value, index) => <p key={`${index}errmessage`}>{value}</p>)}
+                                </div>
+                            )
+
+                        }
+                    </div>
+
+
                     <div className="row" style={{ marginTop: 20 }}>
                         <div
                             className="col-lg-6 col-md-6 col-sm-6"
@@ -231,18 +259,18 @@ const Inscription = () => {
                                 <div id="ville_lib" />
                             </div>
                             <div className="form-group group ">
-                                    <label htmlFor="regions">
-                                        Region :<span style={{ color: "orange" }}>*</span>
-                                    </label>
-                                    <Select
-                                        name="region"
-                                        id="regions"
-                                        options={enums.regions}
-                                        className="basic-single w-50"
-                                        onChange={setSelectData}
-                                        placeholder="Votre region"
-                                    />
-                                </div>
+                                <label htmlFor="regions">
+                                    Region :<span style={{ color: "orange" }}>*</span>
+                                </label>
+                                <Select
+                                    name="region"
+                                    id="regions"
+                                    options={enums.regions}
+                                    className="basic-single w-50"
+                                    onChange={setSelectData}
+                                    placeholder="Votre region"
+                                />
+                            </div>
                             <div className="form-group group">
                                 <label htmlFor="zipcode">
                                     Code postale :<span style={{ color: "orange" }}>*</span>
