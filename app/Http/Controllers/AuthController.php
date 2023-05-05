@@ -14,7 +14,7 @@ class AuthController extends Controller
     {
         $request->validated();
 
-        $newUser = User::create([
+        $user = User::create([
             'nom' => $request->nom,
             'email' => $request->email,
             'password' => bcrypt($request->password),
@@ -27,12 +27,9 @@ class AuthController extends Controller
             'categorie' => $request->categorie,
             'league' => $request->league,
         ]);
-        $token = $newUser->createToken('user_token')->plainTextToken;
-        $response = [
-            'user' => $newUser,
-            'token' => $token
-        ];
-        return response($response,201);
+
+        $token = $user->createToken('main')->plainTextToken;
+        return response(compact('user', 'token'));
     }
 
     public function login(LoginRequest $request)
@@ -46,7 +43,7 @@ class AuthController extends Controller
 
         /** @var User $user */
         $user = Auth::user();
-        $token = $user->createToken('user_token')->plainTextToken;
+        $token = $user->createToken('main')->plainTextToken;
 
         return response(compact('user', 'token'),201);
     }
@@ -55,7 +52,7 @@ class AuthController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        $user->currentAccessToken()->delete();
+        // $user->currentAccessToken()->delete();
         return response('', 204);
     }
 }

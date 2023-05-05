@@ -4,15 +4,17 @@ import {
     LoadCanvasTemplate,
     validateCaptcha
 } from 'react-simple-captcha';
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axiosClient from "../api/axios-config";
 import Select from 'react-select';
+import { useStateContext } from "../context/ContextProvider";
 
 const Inscription = () => {
-
+    const { setUser, setToken } = useStateContext()
+    const navigate = useNavigate();
     const capatchaInp = useRef();
     const conditionsInp = useRef();
-    const alertelm = useRef()
+    const alertelment = useRef()
     const [enums, setEnums] = useState({
         categories: [],
         niveaus: [],
@@ -37,7 +39,15 @@ const Inscription = () => {
         conditions: false,
     })
 
-    const [errmessages, seterrmessages] = useState([]);
+    const resetPassword = () => useState({
+        ...formdata,
+        password : "",
+        password_confirmation: "",
+    })
+
+    const resetFormdata = () => useState()
+
+    const [errmessages, setErrMessages] = useState([]);
 
     useEffect(() => {
         window.effectCommands();
@@ -45,7 +55,7 @@ const Inscription = () => {
         loadCaptchaEnginge(6);
 
         axiosClient.get("/matchenum")
-            .then(res => setEnums(res.data))
+            .then(({ data }) => setEnums(data))
             .catch(err => console.log(err))
     }, [])
 
@@ -75,24 +85,28 @@ const Inscription = () => {
             refreshCapatcha();
             return true
         } else {
-            seterrmessages(["Captcha Does Not Match"]);
+            resetPassword()
             refreshCapatcha();
-            alertelm.current.scrollIntoView({ behavior: 'smooth' });
+            setErrMessages(["Captcha Does Not Match"]);
+            alertelment.current.scrollIntoView({ behavior: 'smooth' });
         }
     }
 
     const submitData = () => {
-        if (doSubmit()) {
+        if (true || doSubmit()) {
             axiosClient.post('auth/signup', formdata)
-                .then(() => {
-                    console.log('done')
-                    seterrmessages([])
+                .then(({ data }) => {
+                    setErrMessages([])
+                    setUser(data.user);
+                    setToken(data.token);
+                    console.log(data.user)
+                    navigate('/')
                 })
                 .catch(err => {
                     const response = err.response;
                     if (response && response.status === 422) {
-                        seterrmessages(Object.values(response.data.errors))
-                        alertelm.current.scrollIntoView({ behavior: 'smooth' });
+                        setErrMessages(Object.values(response.data.errors))
+                        alertelment.current.scrollIntoView({ behavior: 'smooth' });
                     }
                 })
         }
@@ -119,19 +133,18 @@ const Inscription = () => {
             {/* inscription Area */}
             <section className="news-area">
                 <div className="container">
-                    <div ref={alertelm} className="py-2">
+                    <div ref={alertelment} className="pt-2">
                         {
                             (errmessages.length > 3) ? (
                                 <div className="alert alert-danger">
-                                    {errmessages.slice(0,3).map((value, index) => <p key={`${index}errmessage`}>{value}</p>)}
+                                    {errmessages.slice(0, 3).map((value, index) => <p key={`${index}errmessage`}>- {value[0]}</p>)}
                                     <p>...</p>
                                 </div>
-                            ) : (errmessages.length > 0)&&(
+                            ) : (errmessages.length > 0) && (
                                 <div className="alert alert-danger">
-                                    {errmessages.map((value, index) => <p key={`${index}errmessage`}>{value}</p>)}
+                                    {errmessages.map((value, index) => <p key={`${index}errmessage`}>- {value[0]}</p>)}
                                 </div>
                             )
-
                         }
                     </div>
 
