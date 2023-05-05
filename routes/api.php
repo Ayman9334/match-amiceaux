@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TableMatchController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -25,5 +26,14 @@ Route::resource('/match', TableMatchController::class);
 
 Route::resource('/user', UserController::class);
 
-Route::get('/matchenum', [UserController::class,"getenums"]);
+Route::get('/matchenum', [UserController::class, "getenums"]);
 
+
+Route::post('auth/signup', [AuthController::class, 'signup']);
+Route::post('auth/login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    Route::post('auth/logout', [AuthController::class, 'signup']);
+    
+});

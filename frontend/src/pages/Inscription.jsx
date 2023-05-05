@@ -83,7 +83,7 @@ const Inscription = () => {
 
     const submitData = () => {
         if (doSubmit()) {
-            axiosClient.post('/user', formdata)
+            axiosClient.post('auth/signup', formdata)
                 .then(() => {
                     console.log('done')
                     seterrmessages([])
@@ -123,7 +123,7 @@ const Inscription = () => {
                         {
                             (errmessages.length > 3) ? (
                                 <div className="alert alert-danger">
-                                    {errmessages.slice(0,4).map((value, index) => <p key={`${index}errmessage`}>{value}</p>)}
+                                    {errmessages.slice(0,3).map((value, index) => <p key={`${index}errmessage`}>{value}</p>)}
                                     <p>...</p>
                                 </div>
                             ) : (errmessages.length > 0)&&(

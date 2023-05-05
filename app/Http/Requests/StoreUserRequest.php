@@ -84,7 +84,7 @@ class StoreUserRequest extends FormRequest
             'password.required' => 'Le champ mot de passe est requis.',
             'password.string' => 'Le champ mot de passe doit être une chaîne de caractères.',
             'password.min' => 'Le champ mot de passe doit contenir au moins :min caractères.',
-            'password.regex' => 'Le mot de passe doit avoir au moins un caractères majuscules ,un caractères minuscules et un chiffre .',
+            'password.regex' => 'Le mot de passe doit avoir au moins un lettre majuscules ,un lettre minuscules et un chiffre .',
             'password.confirmed' => 'Les mots de passe ne correspondent pas.',
             'n_telephone.required' => 'Le champ numéro de téléphone est requis.',
             'n_telephone.regex' => 'Entrer un numéro de téléphone français valide.',

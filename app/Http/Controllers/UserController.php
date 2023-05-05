@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
 use App\Models\TypeEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,31 +27,8 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
-    {
-        $request->validated();
-
-        $newUser = User::create([
-            'nom' => $request->nom,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'n_telephone' => $request->n_telephone,
-            'code_postal' => $request->code_postal,
-            'ville' => $request->ville,
-            'region' => $request->region,
-            'adresse' => $request->adresse,
-            'niveau' => $request->niveau,
-            'categorie' => $request->categorie,
-            'league' => $request->league,
-        ]);
-        $token = $newUser->createToken('user_token')->plainTextToken;
-        $response = [
-            'user' => $newUser,
-            'token' => $token
-        ];
-        return response($response,201);
-    }
-
+    //store func
+    
     /**
      * Display the specified resource.
      */
