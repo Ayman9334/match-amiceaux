@@ -1,11 +1,8 @@
-import { useRef } from "react"
 import { Link } from "react-router-dom"
+import LoginPopup from "./LoginPopup"
 
 const NavigationBar = () => {
-    const exitpopup = useRef()
-    const maskpopup = () => {
-        exitpopup.current.click()
-    }
+    
     return (
         <>
             {/* Top Bar */}
@@ -105,7 +102,8 @@ const NavigationBar = () => {
                 </div>
             </section>
             {/* End Logo Area */}
-            <div
+            <LoginPopup />
+            {/* <div
                 className={"modal fade"}
                 id="loginModal"
                 tabIndex={-1}
@@ -173,10 +171,8 @@ const NavigationBar = () => {
                             </form>
                         </div>
                     </div>
-                    {/* /.modal-content */}
                 </div>
-                {/* /.modal-dialog */}
-            </div>
+            </div> */}
             {/* Menu Area */}
 
             <section className="menu-area">

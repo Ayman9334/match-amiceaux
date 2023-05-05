@@ -45,8 +45,6 @@ const Inscription = () => {
         password_confirmation: "",
     })
 
-    const resetFormdata = () => useState()
-
     const [errmessages, setErrMessages] = useState([]);
 
     useEffect(() => {
@@ -99,8 +97,7 @@ const Inscription = () => {
                     setErrMessages([])
                     setUser(data.user);
                     setToken(data.token);
-                    console.log(data.user)
-                    navigate('/')
+                    window.location.href = '/'
                 })
                 .catch(err => {
                     const response = err.response;
@@ -323,7 +320,7 @@ const Inscription = () => {
                                         id="pw"
                                         placeholder="Votre mot de passe"
                                         onChange={setInpData}
-                                        defaultValue=""
+                                        value={formdata.password}
                                     />
                                 </div>
                                 <div className="col-lg-6 col-md-12 col-sm-12">
@@ -337,7 +334,7 @@ const Inscription = () => {
                                         name="password_confirmation"
                                         id="pwc"
                                         placeholder="Confirmation"
-                                        defaultValue=""
+                                        value={formdata.password_confirmation}
                                         onChange={setInpData}
                                     />
                                 </div>
