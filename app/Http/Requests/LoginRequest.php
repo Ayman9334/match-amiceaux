@@ -11,7 +11,7 @@ class LoginRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,11 +22,20 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|string|exists:users,email',
+            'email' => 'required|email',
             'password' => [
                 'required',
             ],
             'remember' => 'boolean'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'email.required' => 'Le champ email est requis.',
+            'email.email' => 'Le champ email doit être une adresse email valide.',
+            'password.required' => 'Le champ mot de pass est requis.',
+
         ];
     }
 }

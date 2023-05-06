@@ -569,7 +569,7 @@ html {
     top: 100%;
     background: #222222;
     border-top: 3px solid #d32f2f;
-    width: calc(134% - 35px);
+    width: 100%;
     padding: 40px;
     opacity: 0;
     -webkit-transform: scaleY(0);
@@ -681,7 +681,7 @@ html {
     top: 100%;
     background: #fff;
     border-top: 3px solid #d32f2f;
-    width: calc(134% - 35px);
+    width: 100%;
     padding: 30px;
     opacity: 0;
     -webkit-transform: scaleY(0);

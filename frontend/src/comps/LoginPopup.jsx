@@ -1,32 +1,41 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axiosClient from '../api/axios-config';
 import { useStateContext } from '../context/ContextProvider';
 
 const LoginPopup = () => {
-    const exitpopup = useRef();
-    const email = useRef();
-    const motdepasse = useRef();
-
     const { setUser, setToken } = useStateContext()
+    const exitpopup = useRef();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    // const [remember,setRemember] = useState(false);
+    const [errMessages, setErrMessages] = useState()
 
     const submitLogin = (e) => {
         e.preventDefault();
         const formData = {
-            email : email.current.value.trim().toLowerCase(),
-            password : motdepasse.current.value
+            email : email,
+            password : password
         };
-        axiosClient.post('/auth/login',formData)
-            .then(({data})=>{
+        axiosClient.post('/auth/login', formData)
+            .then(({ data }) => {
                 setUser(data.user);
                 setToken(data.token);
+                window.location.href = '/'
             })
-            
+            .catch(err => {
+                const response = err.response;
+                if (response && response.status === 422) {
+                    setErrMessages(response.data.errors)
+                    console.log(response.data.errors)
+                }
+            })
+
     }
 
     return (
         <div
-            className={"modal fade"}
+            className="modal fade"
             id="loginModal"
             tabIndex={-1}
             role="dialog"
@@ -49,7 +58,7 @@ const LoginPopup = () => {
                             Se connecter ou{" "}
                             <Link
                                 to={'/inscription'}
-                                onClick={()=>exitpopup.current.click()}
+                                onClick={() => exitpopup.current.click()}
                             >
                                 <u>Créer un compte</u>
                             </Link>
@@ -60,23 +69,28 @@ const LoginPopup = () => {
                             <div className="form-group group">
                                 <label htmlFor="log-email">Email</label>
                                 <input
-                                    ref={email}
+                                    onChange={(e)=> setEmail(e.target.value)}
+                                    value={email}
                                     type="text"
                                     className="form-control"
                                     name="email"
                                     id="log-email"
                                     placeholder="Votre mail"
+                                    required
                                 />
+                                <p className='text-danger'>{errMessages?.email[0]}</p>
                             </div>
                             <div className="form-group group" id="pw_div">
                                 <label htmlFor="password">Mot de passe</label>
                                 <input
-                                    ref={motdepasse}
+                                    onChange={(e)=> setPassword(e.target.value)}
+                                    value={password}
                                     type="password"
-                                    className="form-control"
+                                    className={"form-control"}
                                     name="password"
                                     id="password"
                                     placeholder="Votre mot de passe"
+                                    required
                                 />
                                 <a
                                     className="help-link"

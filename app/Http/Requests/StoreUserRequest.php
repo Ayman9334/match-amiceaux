@@ -65,7 +65,7 @@ class StoreUserRequest extends FormRequest
                     ->where('type_enum_id', 4),
             ],
 
-            'conditions' => 'accepted',
+            'conditions' => 'boolean|accepted',
         ];
     }
 

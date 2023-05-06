@@ -1,18 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import {
-    loadCaptchaEnginge,
-    LoadCanvasTemplate,
-    validateCaptcha
-} from 'react-simple-captcha';
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import axiosClient from "../api/axios-config";
 import Select from 'react-select';
 import { useStateContext } from "../context/ContextProvider";
 
 const Inscription = () => {
-    const { setUser, setToken } = useStateContext()
-    const navigate = useNavigate();
-    const capatchaInp = useRef();
+    const { setUser, setToken } = useStateContext();
     const conditionsInp = useRef();
     const alertelment = useRef()
     const [enums, setEnums] = useState({
@@ -39,19 +32,16 @@ const Inscription = () => {
         conditions: false,
     })
 
-    const resetPassword = () => useState({
-        ...formdata,
-        password : "",
-        password_confirmation: "",
-    })
+    // const resetPassword = () => setFormdata({
+    //     ...formdata,
+    //     password : "",
+    //     password_confirmation: "",
+    // })
 
     const [errmessages, setErrMessages] = useState([]);
 
     useEffect(() => {
         window.effectCommands();
-
-        loadCaptchaEnginge(6);
-
         axiosClient.get("/matchenum")
             .then(({ data }) => setEnums(data))
             .catch(err => console.log(err))
@@ -74,27 +64,10 @@ const Inscription = () => {
         [e.target.name]: e.target.checked,
     })
 
-    const refreshCapatcha = () => {
-        loadCaptchaEnginge(6);
-        capatchaInp.current.value = "";
-    }
-    const doSubmit = () => {
-        if (validateCaptcha(capatchaInp.current.value) === true) {
-            refreshCapatcha();
-            return true
-        } else {
-            resetPassword()
-            refreshCapatcha();
-            setErrMessages(["Captcha Does Not Match"]);
-            alertelment.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
     const submitData = () => {
-        if (true || doSubmit()) {
+        if (true) {
             axiosClient.post('auth/signup', formdata)
                 .then(({ data }) => {
-                    setErrMessages([])
                     setUser(data.user);
                     setToken(data.token);
                     window.location.href = '/'
@@ -340,9 +313,9 @@ const Inscription = () => {
                                 </div>
                             </div>
                             <div className="form-group group">
-                                <label htmlFor="rf-password-repeat">
+                                {/* <label htmlFor="rf-password-repeat">
                                     Recopier le text suivant<span style={{ color: "orange" }}>*</span>
-                                </label>
+                                </label> */}
                                 {/* <div className="row" id="canvas_div">
                                     <canvas id="canvas" style={{ float: "left" }} />
                                     <input
@@ -351,20 +324,6 @@ const Inscription = () => {
                                         style={{ width: 150 }}
                                     />
                                 </div> */}
-                                <div className="row">
-                                    <div className="col">
-                                        <LoadCanvasTemplate />
-                                    </div>
-                                    <div className="col-sm-12 col-md-6">
-                                        <input
-                                            ref={capatchaInp}
-                                            placeholder="Enter Captcha"
-                                            className="form-control"
-                                            name="user_captcha_input"
-                                            type="text"
-                                        ></input>
-                                    </div>
-                                </div>
                             </div>
                             <div className="form-group group" style={{ marginLeft: 20 }}>
                                 <div className="checkbox">

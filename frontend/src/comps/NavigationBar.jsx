@@ -102,85 +102,16 @@ const NavigationBar = () => {
                 </div>
             </section>
             {/* End Logo Area */}
+            
             <LoginPopup />
-            {/* <div
-                className={"modal fade"}
-                id="loginModal"
-                tabIndex={-1}
-                role="dialog"
-                aria-hidden="true"
-            >
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button
-                                ref={exitpopup}
-                                type="button"
-                                className="close"
-                                data-dismiss="modal"
-                                aria-hidden="true"
-                                style={{ marginLeft: 0 }}
-                            >
-                                <i className="fa fa-times" />
-                            </button>
-                            <span>
-                                Se connecter ou{" "}
-                                <Link
-                                    to={'/inscription'}
-                                    onClick={maskpopup}
-                                >
-                                    <u>Créer un compte</u>
-                                </Link>
-                            </span>
-                        </div>
-                        <div className="modal-body">
-                            <form className="login-form" id="login-form">
-                                <div className="form-group group">
-                                    <label htmlFor="log-email">Email</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="login"
-                                        id="login"
-                                        placeholder="Votre mail"
-                                    />
-                                </div>
-                                <div className="form-group group" id="pw_div">
-                                    <label htmlFor="log-password">Mot de passe</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        name="password"
-                                        id="password"
-                                        placeholder="Votre mot de passe"
-                                    />
-                                    <a
-                                        className="help-link"
-                                        href=""
-                                        onClick={() => window.manageForggotPassword(true)}
-                                    >
-                                        Mot de passe oublié ?
-                                    </a>
-                                </div>
-                                <input
-                                    className="btn btn-success me-2"
-                                    id="connect_btn"
-                                    type="button"
-                                    defaultValue="Se connecter"
-                                />
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
-            {/* Menu Area */}
+            
 
             <section className="menu-area">
 
                 {/* /.modal */}
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-9">
+                        <div className="col-md-12">
                             <div className="main-menu">
                                 <ul className="list-unstyled list-inline">
                                     <li className="list-inline-item">
@@ -584,11 +515,11 @@ const NavigationBar = () => {
                                 </ul>
                             </div>
                         </div>
-                        <div className="col-md-3">
+                        {/* <div className="col-md-3">
                             <div className="clock text-right">
                                 <span id="dg-clock" />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </section>
