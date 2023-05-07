@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom"
 import axiosClient from "../api/axios-config";
-
+import Select from 'react-select';
 const CreeMatch = () => {
     useEffect(() => {
         window.effectCommands();
         axiosClient.get("/matchenum")
             .then(({ data }) => setEnums(data))
-            .catch(err => location.href = '/error-404')
+            .catch(() => location.href = '/error-404')
     }, [])
-
+    const [value, onChange] = useState(new Date());
     const alertelment = useRef();
     const date = useRef();
     const temp = useRef();
@@ -39,7 +39,6 @@ const CreeMatch = () => {
             [choices.name]: e.value,
         })
     }
-
     return (
         <div>
             <div ref={alertelment} className="pt-2">
@@ -73,44 +72,120 @@ const CreeMatch = () => {
                 </div>
             </section>
             <section className="cree-match">
-                <div className="container">
+                <div className="container py-4">
                     <form action="">
-                        <h2 className="py-2">Entrer les information du match</h2>
-                        <div className="row">
+                        <h2 className="pb-4">Entrer les information du match</h2>
+                        <div className="row col-12 col-lg-9">
                             <div className="form-group group col-12 col-md-6 px-3">
-                                <label htmlFor="match_date">
-                                    Nom ou prénom visible dans la liste des matchs
-                                    <span style={{ color: "orange" }}>*</span>
+                                <label htmlFor="match_temp">
+                                    Heure du match : <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     ref={temp}
                                     type="time"
-                                    id="match_date"
+                                    id="match_temp"
                                     className="form-control"
-                                    name="match_date"
-                                    onChange={setInpMatch}
+                                    name="match_temp"
                                     required
                                 />
                             </div>
-                            <div className="form-group group col-12 col-md-6 px-3">
+                            <div className="form-group group col-12 col-md-6 col-lg-6 px-3">
                                 <label htmlFor="match_date">
-                                    Nom ou prénom visible dans la liste des matchs
-                                    <span style={{ color: "orange" }}>*</span>
+                                    Date du match: <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     ref={date}
-                                    type="datetime-local"
+                                    type="date"
                                     id="match_date"
                                     className="form-control"
                                     name="match_date"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group group col-12 col-md-6 col-lg-6 px-3">
+                                <label htmlFor="match_date">
+                                    Nombre de joueurs de chaque équipe: <span style={{ color: "orange" }}>*</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    id="match_date"
+                                    className="form-control"
+                                    name="match_date"
+                                    placeholder="Entrer un nembre entre (5-12)"
+                                    min={3}
+                                    max={12}
                                     onChange={setInpMatch}
                                     required
                                 />
                             </div>
-
+                            <div className="form-group group col-12">
+                                <label htmlFor="lieu">
+                                    Addresse : <span style={{ color: "orange" }}>*</span>
+                                </label>
+                                <textarea
+                                    className="form-control"
+                                    name="lieu"
+                                    id="lieu"
+                                    placeholder="lieu"
+                                    onChange={setInpMatch}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group group col-lg-6 col-12">
+                                    <label htmlFor="categories">
+                                        Categories :
+                                    </label>
+                                    <Select
+                                        name="categorie"
+                                        id="categories"
+                                        options={enums.categories}
+                                        className="basic-single"
+                                        onChange={setSelectMatch}
+                                        placeholder="Votre categories"
+                                    />
+                                </div>
+                                <div className="form-group group col-lg-6 col-12">
+                                    <label htmlFor="niveaus">
+                                        Niveau :
+                                    </label>
+                                    <Select
+                                        name="niveau"
+                                        id="niveaus"
+                                        options={enums.niveaus}
+                                        className="basic-single"
+                                        onChange={setSelectMatch}
+                                        placeholder="Votre niveau"
+                                    />
+                                </div>
+                                <div className="form-group group col-lg-6 col-12">
+                                    <label htmlFor="leagues">
+                                        League :
+                                    </label>
+                                    <Select
+                                        name="league"
+                                        id="leagues"
+                                        options={enums.leagues}
+                                        className="basic-single"
+                                        onChange={setSelectMatch}
+                                        placeholder="Votre league"
+                                    />
+                                </div>
+                                <div className="form-group group col-12">
+                                <label htmlFor="description">
+                                    Description : <span style={{ color: "orange" }}>*</span>
+                                </label>
+                                <textarea
+                                    className="form-control"
+                                    name="description"
+                                    id="description"
+                                    placeholder="description"
+                                    onChange={setInpMatch}
+                                    required
+                                />
+                            </div>
+                            <div className="m-auto"><button className="btn btn-success">Ajouter le match</button></div>
                         </div>
                     </form>
-
 
                 </div>
             </section>
