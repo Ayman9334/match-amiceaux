@@ -24,10 +24,11 @@ const CreeMatch = () => {
 
     const [formMatch, setFormMatch] = useState({
         match_date: "",
+        nembre_joueur: "",
         lieu: "",
         niveau: "",
         categorie: "",
-        league: "",
+        ligue: "",
         description: "",
     });
 
@@ -45,6 +46,28 @@ const CreeMatch = () => {
             [choices.name]: e.value,
         });
     };
+
+    const makeDate = () => {
+        setFormMatch({
+            ...formMatch,
+            match_date : `${date.current.value} ${temp.current.value}`
+        });
+    }
+
+    const submitMatch = (e) => {
+        e.preventDefault();
+        axiosClient.post('match',formMatch)
+            .then(({data}) => {
+                //
+            })
+            .catch(err => {
+                const response = err.response;
+                if (response && response.status === 422) {
+                    setErrMessages(Object.values(response.data.errors))
+                    alertelment.current.scrollIntoView({ behavior: 'smooth' });
+                }
+            })
+    }
 
     return (
         <div>
@@ -85,7 +108,7 @@ const CreeMatch = () => {
             </section>
             <section className="cree-match">
                 <div className="container py-4">
-                    <form action="">
+                    <form onSubmit={submitMatch}>
                         <h2 className="pb-4">
                             Entrer les information du match
                         </h2>
@@ -101,6 +124,7 @@ const CreeMatch = () => {
                                     id="match_temp"
                                     className="form-control"
                                     name="match_temp"
+                                    onChange={makeDate}
                                     required
                                 />
                             </div>
@@ -115,19 +139,20 @@ const CreeMatch = () => {
                                     id="match_date"
                                     className="form-control"
                                     name="match_date"
+                                    onChange={makeDate}
                                     required
                                 />
                             </div>
                             <div className="form-group group col-12 col-md-6 col-lg-6 px-3">
-                                <label htmlFor="match_date">
+                                <label htmlFor="nembre_joueur">
                                     Nombre de joueurs de chaque équipe:{" "}
                                     <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="number"
-                                    id="match_date"
+                                    id="nembre_joueur"
                                     className="form-control"
-                                    name="match_date"
+                                    name="nembre_joueur"
                                     placeholder="Entrer un nembre entre (5-12)"
                                     min={3}
                                     max={12}
@@ -158,6 +183,7 @@ const CreeMatch = () => {
                                     className="basic-single"
                                     onChange={setSelectMatch}
                                     placeholder="Votre categories"
+                                    required
                                 />
                             </div>
                             <div className="form-group group col-lg-6 col-12">
@@ -169,17 +195,19 @@ const CreeMatch = () => {
                                     className="basic-single"
                                     onChange={setSelectMatch}
                                     placeholder="Votre niveau"
+                                    required
                                 />
                             </div>
                             <div className="form-group group col-lg-6 col-12">
-                                <label htmlFor="leagues">League :</label>
+                                <label htmlFor="ligue">League :</label>
                                 <Select
-                                    name="league"
-                                    id="leagues"
+                                    name="ligue"
+                                    id="ligue"
                                     options={enums.leagues}
                                     className="basic-single"
                                     onChange={setSelectMatch}
                                     placeholder="Votre league"
+                                    required
                                 />
                             </div>
                             <div className="form-group group col-12">
@@ -193,6 +221,7 @@ const CreeMatch = () => {
                                     id="description"
                                     placeholder="description"
                                     onChange={setInpMatch}
+                                    minLength={30}
                                     required
                                 />
                             </div>
