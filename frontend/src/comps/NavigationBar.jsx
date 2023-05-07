@@ -517,7 +517,7 @@ const NavigationBar = () => {
                                     
                                     {auth ? <>
                                         <li className="list-inline-item">
-                                            <Link to="/">CRÉER UN MATCH</Link>
+                                            <Link to="/cree-match">CRÉER UN MATCH</Link>
                                         </li>
                                         <li className="list-inline-item">
                                             <a onClick={onLogout}>

@@ -65,6 +65,7 @@ const Inscription = () => {
     })
 
     const submitData = () => {
+        // eslint-disable-next-line no-constant-condition
         if (true) { //ajouter capatcha!!!!
             axiosClient.post('auth/signup', formdata)
                 .then(({ data }) => {

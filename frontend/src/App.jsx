@@ -4,6 +4,7 @@ import Acceuil from './pages/Acceuil';
 import Inscription from './pages/Inscription';
 import Trouvmatch from './pages/trouvmatch';
 import Nopage from './pages/Nopage';
+import CreeMatch from './pages/CreeMatch';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route index element={<Acceuil/>} />
           <Route path='/inscription' element={<Inscription />} />
           <Route path='/trouve-match' element={<Trouvmatch />} />
+          <Route path='/cree-match' element={<CreeMatch />} />
         </Route>
         <Route path='*' element={<Nopage />}/>
       </Routes>
