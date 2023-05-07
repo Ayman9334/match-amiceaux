@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import axiosClient from "../api/axios-config";
-import Select from 'react-select';
+import Select from "react-select";
 import { useStateContext } from "../context/ContextProvider";
 
 const Inscription = () => {
     const { setUser, setToken } = useStateContext();
     const conditionsInp = useRef();
-    const alertelment = useRef()
+    const alertelment = useRef();
     const [enums, setEnums] = useState({
         categories: [],
         niveaus: [],
@@ -16,21 +16,21 @@ const Inscription = () => {
     });
 
     const [formdata, setFormdata] = useState({
-        nom: '',
-        email: '',
-        email_confirmation: '',
-        password: '',
-        password_confirmation: '',
-        n_telephone: '',
-        code_postal: '',
-        ville: '',
-        region: '',
-        adresse: '',
-        niveau: '',
-        categorie: '',
-        league: '',
+        nom: "",
+        email: "",
+        email_confirmation: "",
+        password: "",
+        password_confirmation: "",
+        n_telephone: "",
+        code_postal: "",
+        ville: "",
+        region: "",
+        adresse: "",
+        niveau: "",
+        categorie: "",
+        league: "",
         conditions: false,
-    })
+    });
 
     // const resetPassword = () => setFormdata({
     //     ...formdata,
@@ -42,46 +42,53 @@ const Inscription = () => {
 
     useEffect(() => {
         window.effectCommands();
-        axiosClient.get("/matchenum")
+        axiosClient
+            .get("/matchenum")
             .then(({ data }) => setEnums(data))
-            .catch(err => console.log(err))
-    }, [])
+            .catch((err) => console.log(err));
+    }, []);
 
-    const setInpData = (e) => setFormdata({
-        ...formdata,
-        [e.target.name]: e.target.value,
-    })
+    const setInpData = (e) =>
+        setFormdata({
+            ...formdata,
+            [e.target.name]: e.target.value,
+        });
 
     const setSelectData = (e, choices) => {
         setFormdata({
             ...formdata,
             [choices.name]: e.value,
-        })
-    }
+        });
+    };
 
-    const setCheckboxData = (e) => setFormdata({
-        ...formdata,
-        [e.target.name]: e.target.checked,
-    })
+    const setCheckboxData = (e) =>
+        setFormdata({
+            ...formdata,
+            [e.target.name]: e.target.checked,
+        });
 
     const submitData = () => {
         // eslint-disable-next-line no-constant-condition
-        if (true) { //ajouter capatcha!!!!
-            axiosClient.post('auth/signup', formdata)
+        if (true) {
+            //ajouter capatcha!!!!
+            axiosClient
+                .post("auth/signup", formdata)
                 .then(({ data }) => {
                     setUser(data.user);
                     setToken(data.token);
-                    location.href = '/'
+                    location.href = "/";
                 })
-                .catch(err => {
+                .catch((err) => {
                     const response = err.response;
                     if (response && response.status === 422) {
-                        setErrMessages(Object.values(response.data.errors))
-                        alertelment.current.scrollIntoView({ behavior: 'smooth' });
+                        setErrMessages(Object.values(response.data.errors));
+                        alertelment.current.scrollIntoView({
+                            behavior: "smooth",
+                        });
                     }
-                })
+                });
         }
-    }
+    };
     return (
         <>
             {/* Breadcrumb Area */}
@@ -92,7 +99,8 @@ const Inscription = () => {
                             <div className="breadcrumb-box">
                                 <ul className="list-unstyled list-inline">
                                     <li className="list-inline-item">
-                                        <Link href="/">Home</Link> <i className="fa fa-angle-right" />
+                                        <Link href="/">Home</Link>{" "}
+                                        <i className="fa fa-angle-right" />
                                     </li>
                                     <li className="list-inline-item">Compte</li>
                                 </ul>
@@ -105,20 +113,27 @@ const Inscription = () => {
             <section className="news-area">
                 <div className="container">
                     <div ref={alertelment} className="pt-2">
-                        {
-                            (errmessages.length > 3) ? (
+                        {errmessages.length > 3 ? (
+                            <div className="alert alert-danger">
+                                {errmessages.slice(0, 3).map((value, index) => (
+                                    <p key={`${index}errmessage`}>
+                                        - {value[0]}
+                                    </p>
+                                ))}
+                                <p>...</p>
+                            </div>
+                        ) : (
+                            errmessages.length > 0 && (
                                 <div className="alert alert-danger">
-                                    {errmessages.slice(0, 3).map((value, index) => <p key={`${index}errmessage`}>- {value[0]}</p>)}
-                                    <p>...</p>
-                                </div>
-                            ) : (errmessages.length > 0) && (
-                                <div className="alert alert-danger">
-                                    {errmessages.map((value, index) => <p key={`${index}errmessage`}>- {value[0]}</p>)}
+                                    {errmessages.map((value, index) => (
+                                        <p key={`${index}errmessage`}>
+                                            - {value[0]}
+                                        </p>
+                                    ))}
                                 </div>
                             )
-                        }
+                        )}
                     </div>
-
 
                     <div className="row" style={{ marginTop: 20 }}>
                         <div
@@ -128,7 +143,8 @@ const Inscription = () => {
                             <h2>Informations personnelle</h2>
                             <div className="form-group group">
                                 <label htmlFor="nom">
-                                    Nom ou prénom visible dans la liste des matchs
+                                    Nom ou prénom visible dans la liste des
+                                    matchs
                                     <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
@@ -142,8 +158,13 @@ const Inscription = () => {
                             </div>
                             <div className="form-group group">
                                 <label htmlFor="email">
-                                    Identifiant de connexion<span style={{ color: "orange" }}>*</span>
-                                    <span style={{ fontSize: 12, color: "gray" }}>(votre Email)</span>
+                                    Identifiant de connexion
+                                    <span style={{ color: "orange" }}>*</span>
+                                    <span
+                                        style={{ fontSize: 12, color: "gray" }}
+                                    >
+                                        (votre Email)
+                                    </span>
                                 </label>
                                 <input
                                     type="text"
@@ -156,7 +177,8 @@ const Inscription = () => {
                             </div>
                             <div className="form-group group">
                                 <label htmlFor="emailConfirm">
-                                    Confirmer Email<span style={{ color: "orange" }}>*</span>
+                                    Confirmer Email
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -168,7 +190,9 @@ const Inscription = () => {
                                 />
                             </div>
                             <div className="form-group group">
-                                <label htmlFor="telephone">Téléphone portable</label>
+                                <label htmlFor="telephone">
+                                    Téléphone portable
+                                </label>
                                 <input
                                     type="text"
                                     className="form-control w-50"
@@ -181,8 +205,9 @@ const Inscription = () => {
 
                             <div className="form-group group row">
                                 <p className="font-weight-bold py-2 col-12">
-                                    Lorsqu&apos;un nouveau match est créé, si ces informations
-                                    ci-dessous sont les mêmes que le match, vous recevez un e-mail
+                                    Lorsqu&apos;un nouveau match est créé, si
+                                    ces informations ci-dessous sont les mêmes
+                                    que le match, vous recevez un e-mail
                                     <span style={{ color: "orange" }}>*</span>
                                 </p>
                                 <div className="form-group group col-lg-6 col-12">
@@ -199,9 +224,7 @@ const Inscription = () => {
                                     />
                                 </div>
                                 <div className="form-group group col-lg-6 col-12">
-                                    <label htmlFor="niveaus">
-                                        Niveau :
-                                    </label>
+                                    <label htmlFor="niveaus">Niveau :</label>
                                     <Select
                                         name="niveau"
                                         id="niveaus"
@@ -212,9 +235,7 @@ const Inscription = () => {
                                     />
                                 </div>
                                 <div className="form-group group col-lg-6 col-12">
-                                    <label htmlFor="leagues">
-                                        League :
-                                    </label>
+                                    <label htmlFor="leagues">League :</label>
                                     <Select
                                         name="league"
                                         id="leagues"
@@ -230,7 +251,8 @@ const Inscription = () => {
                             <h2>Informations générales</h2>
                             <div className="form-group group">
                                 <label htmlFor="villes">
-                                    Ville :<span style={{ color: "orange" }}>*</span>
+                                    Ville :
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -244,7 +266,8 @@ const Inscription = () => {
                             </div>
                             <div className="form-group group ">
                                 <label htmlFor="regions">
-                                    Region :<span style={{ color: "orange" }}>*</span>
+                                    Region :
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <Select
                                     name="region"
@@ -257,7 +280,8 @@ const Inscription = () => {
                             </div>
                             <div className="form-group group">
                                 <label htmlFor="zipcode">
-                                    Code postale :<span style={{ color: "orange" }}>*</span>
+                                    Code postale :
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -271,7 +295,8 @@ const Inscription = () => {
 
                             <div className="form-group group">
                                 <label htmlFor="adresses">
-                                    Addresse :<span style={{ color: "orange" }}>*</span>
+                                    Addresse :
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <textarea
                                     className="form-control w-75"
@@ -285,7 +310,10 @@ const Inscription = () => {
                             <div className="form-group group">
                                 <div className="col-lg-6 col-md-12 col-sm-12">
                                     <label htmlFor="pw">
-                                        Mot de passe :<span style={{ color: "orange" }}>*</span>
+                                        Mot de passe :
+                                        <span style={{ color: "orange" }}>
+                                            *
+                                        </span>
                                     </label>
                                     <input
                                         type="password"
@@ -300,7 +328,9 @@ const Inscription = () => {
                                 <div className="col-lg-6 col-md-12 col-sm-12">
                                     <label htmlFor="pwc">
                                         Confirmation mot de passe :
-                                        <span style={{ color: "orange" }}>*</span>
+                                        <span style={{ color: "orange" }}>
+                                            *
+                                        </span>
                                     </label>
                                     <input
                                         type="password"
@@ -326,7 +356,10 @@ const Inscription = () => {
                                     />
                                 </div> */}
                             </div>
-                            <div className="form-group group" style={{ marginLeft: 20 }}>
+                            <div
+                                className="form-group group"
+                                style={{ marginLeft: 20 }}
+                            >
                                 <div className="checkbox">
                                     <input
                                         type="checkbox"
@@ -336,7 +369,11 @@ const Inscription = () => {
                                         onChange={setCheckboxData}
                                         className="form-check-input"
                                     />
-                                    <label> J&apos;accepte les conditions d&apos;utilisation</label>
+                                    <label>
+                                        {" "}
+                                        J&apos;accepte les conditions
+                                        d&apos;utilisation
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -352,8 +389,7 @@ const Inscription = () => {
                 </div>
             </section>
         </>
+    );
+};
 
-    )
-}
-
-export default Inscription
+export default Inscription;

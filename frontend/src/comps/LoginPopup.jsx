@@ -1,37 +1,37 @@
-import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import axiosClient from '../api/axios-config';
-import { useStateContext } from '../context/ContextProvider';
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import axiosClient from "../api/axios-config";
+import { useStateContext } from "../context/ContextProvider";
 
 const LoginPopup = () => {
-    const { setUser, setToken } = useStateContext()
+    const { setUser, setToken } = useStateContext();
     const exitpopup = useRef();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     // const [remember,setRemember] = useState(false);
-    const [errMessages, setErrMessages] = useState()
+    const [errMessages, setErrMessages] = useState();
 
     const submitLogin = (e) => {
         e.preventDefault();
         const formData = {
-            email : email,
-            password : password
+            email: email,
+            password: password,
         };
-        axiosClient.post('/auth/login', formData)
+        axiosClient
+            .post("/auth/login", formData)
             .then(({ data }) => {
                 setUser(data.user);
                 setToken(data.token);
-                location.href = '/'
+                location.href = "/";
             })
-            .catch(err => {
+            .catch((err) => {
                 const response = err.response;
                 if (response && response.status === 422) {
-                    setErrMessages(response.data.errors)
-                    console.log(response.data.errors)
+                    setErrMessages(response.data.errors);
+                    console.log(response.data.errors);
                 }
-            })
-
-    }
+            });
+    };
 
     return (
         <div
@@ -57,7 +57,7 @@ const LoginPopup = () => {
                         <span>
                             Se connecter ou{" "}
                             <Link
-                                to={'/inscription'}
+                                to={"/inscription"}
                                 onClick={() => exitpopup.current.click()}
                             >
                                 <u>Créer un compte</u>
@@ -69,7 +69,7 @@ const LoginPopup = () => {
                             <div className="form-group group">
                                 <label htmlFor="log-email">Email</label>
                                 <input
-                                    onChange={(e)=> setEmail(e.target.value)}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     value={email}
                                     type="text"
                                     className="form-control"
@@ -78,12 +78,16 @@ const LoginPopup = () => {
                                     placeholder="Votre mail"
                                     required
                                 />
-                                <p className='text-danger'>{errMessages?.email[0]}</p>
+                                <p className="text-danger">
+                                    {errMessages?.email[0]}
+                                </p>
                             </div>
                             <div className="form-group group" id="pw_div">
                                 <label htmlFor="password">Mot de passe</label>
                                 <input
-                                    onChange={(e)=> setPassword(e.target.value)}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                     value={password}
                                     type="password"
                                     className={"form-control"}
@@ -95,7 +99,9 @@ const LoginPopup = () => {
                                 <a
                                     className="help-link"
                                     href=""
-                                    onClick={() => window.manageForggotPassword(true)}
+                                    onClick={() =>
+                                        window.manageForggotPassword(true)
+                                    }
                                 >
                                     Mot de passe oublié ?
                                 </a>
@@ -112,7 +118,7 @@ const LoginPopup = () => {
             </div>
             {/* /.modal-dialog */}
         </div>
-    )
-}
+    );
+};
 
-export default LoginPopup
+export default LoginPopup;

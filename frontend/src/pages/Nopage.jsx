@@ -8,14 +8,15 @@ const Nopage = () => {
                 </div>
                 <h2>We are sorry, Page not found!</h2>
                 <p>
-                    The page you are looking for might have been removed had its name changed
-                    or is temporarily unavailable.
+                    The page you are looking for might have been removed had its
+                    name changed or is temporarily unavailable.
                 </p>
-                <a href="/" className="link">Back To Homepage</a>
+                <a href="/" className="link">
+                    Back To Homepage
+                </a>
             </div>
         </div>
+    );
+};
 
-    )
-}
-
-export default Nopage
+export default Nopage;

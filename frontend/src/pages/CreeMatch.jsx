@@ -50,24 +50,25 @@ const CreeMatch = () => {
     const makeDate = () => {
         setFormMatch({
             ...formMatch,
-            match_date : `${date.current.value} ${temp.current.value}`
+            match_date: `${date.current.value} ${temp.current.value}`,
         });
-    }
+    };
 
     const submitMatch = (e) => {
         e.preventDefault();
-        axiosClient.post('match',formMatch)
-            .then(({data}) => {
+        axiosClient
+            .post("match", formMatch)
+            .then(({ data }) => {
                 //
             })
-            .catch(err => {
+            .catch((err) => {
                 const response = err.response;
                 if (response && response.status === 422) {
-                    setErrMessages(Object.values(response.data.errors))
-                    alertelment.current.scrollIntoView({ behavior: 'smooth' });
+                    setErrMessages(Object.values(response.data.errors));
+                    alertelment.current.scrollIntoView({ behavior: "smooth" });
                 }
-            })
-    }
+            });
+    };
 
     return (
         <div>
