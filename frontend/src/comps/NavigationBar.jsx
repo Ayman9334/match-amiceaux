@@ -1,8 +1,22 @@
 import { Link } from "react-router-dom"
 import LoginPopup from "./LoginPopup"
+import { useStateContext } from "../context/ContextProvider"
+import { useState } from "react"
+import axiosClient from "../api/axios-config"
 
 const NavigationBar = () => {
-    
+    const { setUser, setToken, token } = useStateContext()
+    const [auth] = useState(token ? true : false)
+
+    const onLogout = () => {
+        axiosClient.post('/auth/logout')
+            .then(() => {
+                setUser({})
+                setToken(null)
+                location.href = '/'
+            })
+    }
+
     return (
         <>
             {/* Top Bar */}
@@ -102,9 +116,9 @@ const NavigationBar = () => {
                 </div>
             </section>
             {/* End Logo Area */}
-            
+
             <LoginPopup />
-            
+
 
             <section className="menu-area">
 
@@ -117,7 +131,7 @@ const NavigationBar = () => {
                                     <li className="list-inline-item">
                                         <Link to="/">ACCUEIL</Link>
                                     </li>
-                                    <li className="list-inline-item">
+                                    {/* <li className="list-inline-item">
                                         <a>
                                             FONCTIONNEMENT <i className="fa fa-angle-down" />
                                         </a>
@@ -151,7 +165,7 @@ const NavigationBar = () => {
                                                 <a href="apropos.html">A propos</a>
                                             </li>
                                         </ul>
-                                    </li>
+                                    </li> */}
                                     <li className="list-inline-item mega-vd">
                                         <a>
                                             VIDEOS <i className="fa fa-angle-down" />
@@ -495,23 +509,34 @@ const NavigationBar = () => {
                                     <li className="list-inline-item">
                                         <Link
                                             to={"/trouve-match"}
-                                            style={{ textDecoration: "underline", color: "#b427cc" }}
                                         >
-                                            <span className="fa fa-search" style={{ color: "fuchsia" }} />{" "}
+                                            <span className="fa fa-search" />{" "}
                                             RECHERCHER UN MATCH
                                         </Link>
                                     </li>
-                                    <li className="list-inline-item">
-                                        <a
-                                            href="#"
-                                            data-toggle="modal"
-                                            data-target="#loginModal"
-                                            style={{ textDecoration: "underline", color: "#b427cc" }}
-                                        >
-                                            <span className="fa fa-user" style={{ color: "blue" }} />{" "}
-                                            COMPTE
-                                        </a>
-                                    </li>
+                                    
+                                    {auth ? <>
+                                        <li className="list-inline-item">
+                                            <Link to="/">CRÉER UN MATCH</Link>
+                                        </li>
+                                        <li className="list-inline-item">
+                                            <a onClick={onLogout}>
+                                                <span className="fa fa-sign-out" /> SE DÉCONNECTER
+                                            </a>
+                                        </li>
+                                    </> : <>
+                                        <li className="list-inline-item">
+                                            <a
+                                                href="#"
+                                                data-toggle="modal"
+                                                data-target="#loginModal"
+                                            >
+                                                <span className="fa fa-user" /> COMPTE
+                                            </a>
+                                        </li>
+                                    </>}
+
+
                                 </ul>
                             </div>
                         </div>

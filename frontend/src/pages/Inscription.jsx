@@ -65,12 +65,12 @@ const Inscription = () => {
     })
 
     const submitData = () => {
-        if (true) {
+        if (true) { //ajouter capatcha!!!!
             axiosClient.post('auth/signup', formdata)
                 .then(({ data }) => {
                     setUser(data.user);
                     setToken(data.token);
-                    window.location.href = '/'
+                    location.href = '/'
                 })
                 .catch(err => {
                     const response = err.response;

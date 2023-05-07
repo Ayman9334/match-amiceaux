@@ -21,7 +21,7 @@ const LoginPopup = () => {
             .then(({ data }) => {
                 setUser(data.user);
                 setToken(data.token);
-                window.location.href = '/'
+                location.href = '/'
             })
             .catch(err => {
                 const response = err.response;

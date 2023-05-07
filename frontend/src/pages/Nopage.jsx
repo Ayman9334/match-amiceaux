@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import "../css/nopage.css";
 const Nopage = () => {
     return (
@@ -12,7 +11,7 @@ const Nopage = () => {
                     The page you are looking for might have been removed had its name changed
                     or is temporarily unavailable.
                 </p>
-                <Link to={'/'} className="link">Back To Homepage</Link>
+                <a href="/" className="link">Back To Homepage</a>
             </div>
         </div>
 
