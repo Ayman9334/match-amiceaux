@@ -1,59 +1,70 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import axiosClient from "../api/axios-config";
-import Select from 'react-select';
+import Select from "react-select";
 const CreeMatch = () => {
     useEffect(() => {
         window.effectCommands();
-        axiosClient.get("/matchenum")
+        axiosClient
+            .get("/matchenum")
             .then(({ data }) => setEnums(data))
-            .catch(() => location.href = '/error-404')
-    }, [])
-    const [value, onChange] = useState(new Date());
+            .catch(() => (location.href = "/error-404"));
+    }, []);
+
     const alertelment = useRef();
     const date = useRef();
     const temp = useRef();
+
     const [enums, setEnums] = useState({
         categories: [],
         niveaus: [],
         regions: [],
         leagues: [],
     });
+
     const [formMatch, setFormMatch] = useState({
-        match_date: '',
-        lieu: '',
-        niveau: '',
-        categorie: '',
-        league: '',
-        description: '',
-    })
+        match_date: "",
+        lieu: "",
+        niveau: "",
+        categorie: "",
+        league: "",
+        description: "",
+    });
+
     const [errmessages, setErrMessages] = useState([]);
-    const setInpMatch = (e) => setFormMatch({
-        ...formMatch,
-        [e.target.name]: e.target.value,
-    })
+
+    const setInpMatch = (e) =>
+        setFormMatch({
+            ...formMatch,
+            [e.target.name]: e.target.value,
+        });
 
     const setSelectMatch = (e, choices) => {
         setFormMatch({
             ...formMatch,
             [choices.name]: e.value,
-        })
-    }
+        });
+    };
+
     return (
         <div>
             <div ref={alertelment} className="pt-2">
-                {
-                    (errmessages.length > 3) ? (
+                {errmessages.length > 3 ? (
+                    <div className="alert alert-danger">
+                        {errmessages.slice(0, 3).map((value, index) => (
+                            <p key={`${index}errmessage`}>- {value[0]}</p>
+                        ))}
+                        <p>...</p>
+                    </div>
+                ) : (
+                    errmessages.length > 0 && (
                         <div className="alert alert-danger">
-                            {errmessages.slice(0, 3).map((value, index) => <p key={`${index}errmessage`}>- {value[0]}</p>)}
-                            <p>...</p>
-                        </div>
-                    ) : (errmessages.length > 0) && (
-                        <div className="alert alert-danger">
-                            {errmessages.map((value, index) => <p key={`${index}errmessage`}>- {value[0]}</p>)}
+                            {errmessages.map((value, index) => (
+                                <p key={`${index}errmessage`}>- {value[0]}</p>
+                            ))}
                         </div>
                     )
-                }
+                )}
             </div>
             <section className="breadcrumb-area">
                 <div className="container">
@@ -62,7 +73,8 @@ const CreeMatch = () => {
                             <div className="breadcrumb-box">
                                 <ul className="list-unstyled list-inline">
                                     <li className="list-inline-item">
-                                        <Link href="/">Home</Link> <i className="fa fa-angle-right" />
+                                        <Link href="/">Home</Link>{" "}
+                                        <i className="fa fa-angle-right" />
                                     </li>
                                     <li className="list-inline-item">Compte</li>
                                 </ul>
@@ -74,11 +86,14 @@ const CreeMatch = () => {
             <section className="cree-match">
                 <div className="container py-4">
                     <form action="">
-                        <h2 className="pb-4">Entrer les information du match</h2>
+                        <h2 className="pb-4">
+                            Entrer les information du match
+                        </h2>
                         <div className="row col-12 col-lg-9">
                             <div className="form-group group col-12 col-md-6 px-3">
                                 <label htmlFor="match_temp">
-                                    Heure du match : <span style={{ color: "orange" }}>*</span>
+                                    Heure du match :{" "}
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     ref={temp}
@@ -91,7 +106,8 @@ const CreeMatch = () => {
                             </div>
                             <div className="form-group group col-12 col-md-6 col-lg-6 px-3">
                                 <label htmlFor="match_date">
-                                    Date du match: <span style={{ color: "orange" }}>*</span>
+                                    Date du match:{" "}
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     ref={date}
@@ -104,7 +120,8 @@ const CreeMatch = () => {
                             </div>
                             <div className="form-group group col-12 col-md-6 col-lg-6 px-3">
                                 <label htmlFor="match_date">
-                                    Nombre de joueurs de chaque équipe: <span style={{ color: "orange" }}>*</span>
+                                    Nombre de joueurs de chaque équipe:{" "}
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -120,7 +137,8 @@ const CreeMatch = () => {
                             </div>
                             <div className="form-group group col-12">
                                 <label htmlFor="lieu">
-                                    Addresse : <span style={{ color: "orange" }}>*</span>
+                                    Addresse :{" "}
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <textarea
                                     className="form-control"
@@ -132,47 +150,42 @@ const CreeMatch = () => {
                                 />
                             </div>
                             <div className="form-group group col-lg-6 col-12">
-                                    <label htmlFor="categories">
-                                        Categories :
-                                    </label>
-                                    <Select
-                                        name="categorie"
-                                        id="categories"
-                                        options={enums.categories}
-                                        className="basic-single"
-                                        onChange={setSelectMatch}
-                                        placeholder="Votre categories"
-                                    />
-                                </div>
-                                <div className="form-group group col-lg-6 col-12">
-                                    <label htmlFor="niveaus">
-                                        Niveau :
-                                    </label>
-                                    <Select
-                                        name="niveau"
-                                        id="niveaus"
-                                        options={enums.niveaus}
-                                        className="basic-single"
-                                        onChange={setSelectMatch}
-                                        placeholder="Votre niveau"
-                                    />
-                                </div>
-                                <div className="form-group group col-lg-6 col-12">
-                                    <label htmlFor="leagues">
-                                        League :
-                                    </label>
-                                    <Select
-                                        name="league"
-                                        id="leagues"
-                                        options={enums.leagues}
-                                        className="basic-single"
-                                        onChange={setSelectMatch}
-                                        placeholder="Votre league"
-                                    />
-                                </div>
-                                <div className="form-group group col-12">
+                                <label htmlFor="categories">Categories :</label>
+                                <Select
+                                    name="categorie"
+                                    id="categories"
+                                    options={enums.categories}
+                                    className="basic-single"
+                                    onChange={setSelectMatch}
+                                    placeholder="Votre categories"
+                                />
+                            </div>
+                            <div className="form-group group col-lg-6 col-12">
+                                <label htmlFor="niveaus">Niveau :</label>
+                                <Select
+                                    name="niveau"
+                                    id="niveaus"
+                                    options={enums.niveaus}
+                                    className="basic-single"
+                                    onChange={setSelectMatch}
+                                    placeholder="Votre niveau"
+                                />
+                            </div>
+                            <div className="form-group group col-lg-6 col-12">
+                                <label htmlFor="leagues">League :</label>
+                                <Select
+                                    name="league"
+                                    id="leagues"
+                                    options={enums.leagues}
+                                    className="basic-single"
+                                    onChange={setSelectMatch}
+                                    placeholder="Votre league"
+                                />
+                            </div>
+                            <div className="form-group group col-12">
                                 <label htmlFor="description">
-                                    Description : <span style={{ color: "orange" }}>*</span>
+                                    Description :{" "}
+                                    <span style={{ color: "orange" }}>*</span>
                                 </label>
                                 <textarea
                                     className="form-control"
@@ -183,14 +196,17 @@ const CreeMatch = () => {
                                     required
                                 />
                             </div>
-                            <div className="m-auto"><button className="btn btn-success">Ajouter le match</button></div>
+                            <div className="m-auto">
+                                <button className="btn btn-success">
+                                    Ajouter le match
+                                </button>
+                            </div>
                         </div>
                     </form>
-
                 </div>
             </section>
         </div>
-    )
-}
+    );
+};
 
-export default CreeMatch
+export default CreeMatch;
