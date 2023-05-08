@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../api/axios-config";
 import Select from "react-select";
+// import MultiImageInput from 'react-multiple-image-input';
+
 const CreeMatch = () => {
     useEffect(() => {
         window.effectCommands();
@@ -14,7 +16,7 @@ const CreeMatch = () => {
     const alertelment = useRef();
     const date = useRef();
     const temp = useRef();
-
+    
     const [enums, setEnums] = useState({
         categories: [],
         niveaus: [],

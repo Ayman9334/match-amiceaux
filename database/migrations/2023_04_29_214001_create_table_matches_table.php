@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('organisateur_id')->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->date('match_date');
+            $table->dateTime('match_date')->format('Y-m-d H:i');
             $table->string('nembre_joueur');
             $table->string('lieu');
             $table->string('niveau');
