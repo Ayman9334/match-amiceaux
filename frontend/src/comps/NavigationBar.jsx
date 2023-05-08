@@ -15,6 +15,11 @@ const NavigationBar = () => {
                 setToken(null)
                 location.href = '/'
             })
+            .catch(()=>{
+                setUser({})
+                setToken(null)
+                location.href = '/'
+            })
     }
 
     return (

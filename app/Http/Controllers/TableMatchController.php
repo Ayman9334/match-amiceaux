@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMatchRequest;
 use App\Models\TableMatch;
 use Illuminate\Http\Request;
 
@@ -27,9 +28,12 @@ class TableMatchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMatchRequest $request)
     {
-        //
+        $matchData = $request->validated();
+        $matchData["organisateur_id"] =  $request->user()->id;
+        TableMatch::create($matchData);
+        return response("", 204);
     }
 
     /**

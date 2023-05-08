@@ -48,7 +48,7 @@ class StoreUserRequest extends FormRequest
                 Rule::exists('type_enums_details', 'code')
                     ->where('type_enum_id', 3),
             ],
-            'adresse' => 'required|max:100',
+            'adresse' => 'required|max:150',
             'niveau' => [
                 'required',
                 Rule::exists('type_enums_details', 'code')

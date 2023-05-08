@@ -57,9 +57,10 @@ const CreeMatch = () => {
     const submitMatch = (e) => {
         e.preventDefault();
         axiosClient
-            .post("match", formMatch)
+            .post("match/store", formMatch)
             .then(({ data }) => {
-                //
+                console.log(data);
+                location.href = "/";
             })
             .catch((err) => {
                 const response = err.response;
@@ -72,24 +73,6 @@ const CreeMatch = () => {
 
     return (
         <div>
-            <div ref={alertelment} className="pt-2">
-                {errmessages.length > 3 ? (
-                    <div className="alert alert-danger">
-                        {errmessages.slice(0, 3).map((value, index) => (
-                            <p key={`${index}errmessage`}>- {value[0]}</p>
-                        ))}
-                        <p>...</p>
-                    </div>
-                ) : (
-                    errmessages.length > 0 && (
-                        <div className="alert alert-danger">
-                            {errmessages.map((value, index) => (
-                                <p key={`${index}errmessage`}>- {value[0]}</p>
-                            ))}
-                        </div>
-                    )
-                )}
-            </div>
             <section className="breadcrumb-area">
                 <div className="container">
                     <div className="row">
@@ -110,10 +93,30 @@ const CreeMatch = () => {
             <section className="cree-match">
                 <div className="container py-4">
                     <form onSubmit={submitMatch}>
-                        <h2 className="pb-4">
-                            Entrer les information du match
-                        </h2>
-                        <div className="row col-12 col-lg-9">
+
+                        <div className="row col-12 col-lg-9 m-auto">
+                            <h2 className="pb-4 col-12">
+                                Entrer les information du match
+                            </h2>
+                            <div ref={alertelment} className="pt-2 col-12">
+                                {errmessages.length > 3 ? (
+                                    <div className="alert alert-danger">
+                                        {errmessages.slice(0, 3).map((value, index) => (
+                                            <p key={`${index}errmessage`}>- {value[0]}</p>
+                                        ))}
+                                        <p>...</p>
+                                    </div>
+                                ) : (
+                                    errmessages.length > 0 && (
+                                        <div className="alert alert-danger">
+                                            {errmessages.map((value, index) => (
+                                                <p key={`${index}errmessage`}>- {value[0]}</p>
+                                            ))}
+                                        </div>
+                                    )
+                                )}
+                            </div>
+
                             <div className="form-group group col-12 col-md-6 px-3">
                                 <label htmlFor="match_temp">
                                     Heure du match :{" "}

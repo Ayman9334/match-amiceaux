@@ -17,7 +17,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->date('match_date');
-            $table->integer('nembre_joueur');
+            $table->string('nembre_joueur');
             $table->string('lieu');
             $table->string('niveau');
             $table->string('categorie');
