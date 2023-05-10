@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../api/axios-config";
 import Select from "react-select";
-// import MultiImageInput from 'react-multiple-image-input';
+import { FileUploader } from "react-drag-drop-files";
+import "../css/creematch.css";
 
 const CreeMatch = () => {
     useEffect(() => {
@@ -16,13 +17,15 @@ const CreeMatch = () => {
     const alertelment = useRef();
     const date = useRef();
     const temp = useRef();
-    
+
     const [enums, setEnums] = useState({
         categories: [],
         niveaus: [],
         regions: [],
         leagues: [],
     });
+
+    const [files, setFiles] = useState([]);
 
     const [formMatch, setFormMatch] = useState({
         match_date: "",
@@ -54,6 +57,15 @@ const CreeMatch = () => {
             ...formMatch,
             match_date: `${date.current.value} ${temp.current.value}`,
         });
+    };
+
+    const setFilesMatch = (objnewfiles) => {
+        const newfiles = Object.values(objnewfiles)
+        if ((files.length + newfiles.length) > 4) {
+            alertelment.current.scrollIntoView({ behavior: "smooth" });
+            setErrMessages([['vous ne pouvez ajouter que 4 images']])
+        }
+        setFiles([...files, ...Object.values(newfiles)].slice(0, 4));
     };
 
     const submitMatch = (e) => {
@@ -95,7 +107,6 @@ const CreeMatch = () => {
             <section className="cree-match">
                 <div className="container py-4">
                     <form onSubmit={submitMatch}>
-
                         <div className="row col-12 col-lg-9 m-auto">
                             <h2 className="pb-4 col-12">
                                 Entrer les information du match
@@ -103,16 +114,22 @@ const CreeMatch = () => {
                             <div ref={alertelment} className="pt-2 col-12">
                                 {errmessages.length > 3 ? (
                                     <div className="alert alert-danger">
-                                        {errmessages.slice(0, 3).map((value, index) => (
-                                            <p key={`${index}errmessage`}>- {value[0]}</p>
-                                        ))}
+                                        {errmessages
+                                            .slice(0, 3)
+                                            .map((value, index) => (
+                                                <p key={`${index}errmessage`}>
+                                                    - {value[0]}
+                                                </p>
+                                            ))}
                                         <p>...</p>
                                     </div>
                                 ) : (
                                     errmessages.length > 0 && (
                                         <div className="alert alert-danger">
                                             {errmessages.map((value, index) => (
-                                                <p key={`${index}errmessage`}>- {value[0]}</p>
+                                                <p key={`${index}errmessage`}>
+                                                    - {value[0]}
+                                                </p>
                                             ))}
                                         </div>
                                     )
@@ -166,6 +183,38 @@ const CreeMatch = () => {
                                     required
                                 />
                             </div>
+                            <hr className="col-10 mx-auto" />
+                            <div className="form-group group images-config col-12 row"> {/* machi responsive + fix var names !!!! */}
+                                <FileUploader
+                                    classes="fileuploader mx-auto col-12 border"
+                                    handleChange={setFilesMatch}
+                                    name="files"
+                                    label="ajouter des photos/vidéos ou glisser-déposer"
+                                    hoverTitle="déposer ici"
+                                    types={["JPG", "JPEG", "PNG"]}
+                                    multiple
+                                />
+                                {(files.length > 0) &&
+                                    <div className='images-affichage col-12 row'>
+                                        
+                                        {files.map(
+                                            (x, index) => <div key={index} className={(index === 0) ? 'col-12 premierimg imgctn' : 'col-4 dernierimgs imgctn'}>
+                                                <div className='bg-dark rounded m-1'>
+                                                    <img src={URL.createObjectURL(x)} />
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className="col-12 d-flex justify-content-center py-2">
+                                            <div className="btn btn-danger" onClick={() => setFiles([])}>
+                                                <span className="fa fa-trash" /> suprimer les image
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+
+                            </div>
+                            <hr className="col-10 mx-auto" />
                             <div className="form-group group col-12">
                                 <label htmlFor="lieu">
                                     Addresse :{" "}
