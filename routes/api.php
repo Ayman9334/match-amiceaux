@@ -29,11 +29,12 @@ Route::resource('/user', UserController::class);
 Route::get('/matchenum', [UserController::class, "getenums"]);
 
 
+
 Route::post('auth/signup', [AuthController::class, 'signup']);
 Route::post('auth/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
+    Route::get('/check-token',[AuthController::class, "verifierToken"]);
     Route::post('auth/logout', [AuthController::class, "logout"]);
     Route::post('match/store', [TableMatchController::class, "store"]);
 });

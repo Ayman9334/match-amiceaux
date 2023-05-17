@@ -55,4 +55,8 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response('', 204);
     }
+
+    public function verifierToken(){
+        return response('',204);
+    }
 }
