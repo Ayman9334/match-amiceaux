@@ -35,6 +35,7 @@ class ClubController extends Controller
         return [
             'nom_club' => $club->nom_club,
             'role' => $user->clubMember->member_role,
+            'members_number' => count($members),
             'membres' => $members,
         ];
     }
@@ -56,7 +57,7 @@ class ClubController extends Controller
         }
 
         $nouveau_club['proprietaire_id'] = $user->id;
-        
+
         $club = Club::create($nouveau_club);
         
         $club_proprietaire= [
