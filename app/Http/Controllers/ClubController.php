@@ -3,16 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Club;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ClubController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function check_utilisateur()
     {
-        //
+        $user = auth()->user();
+
+        if (!$user->clubMember) {
+            return ['message' => 'club introuvable'];
+        }
+
+        $club = $user->clubMember->club;
+
+        $clubMembersIds = $club->clubMembers->map(function ($clubMember) {
+            return $clubMember->member_id;
+        });
+
+        $members = User::select('id', 'nom')->whereIn('id', $clubMembersIds)
+            ->with(['clubMember' => function ($query) {
+                $query->select('id as member_id', 'member_role as role');
+            }])
+            ->get();
+
+        return [
+            'nom_club' => $club->nom_club,
+            'role' => $user->clubMember->member_role,
+            'membres' => $members,
+        ];
     }
 
     /**
@@ -20,7 +41,6 @@ class ClubController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**

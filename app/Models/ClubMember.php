@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class ClubMember extends Model
 {
     use HasFactory;
+
+    public function club(){
+        return $this->belongsTo(Club::class, 'club_id');
+    }
+
+    public function member(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
