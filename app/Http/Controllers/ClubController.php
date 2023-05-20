@@ -50,14 +50,15 @@ class ClubController extends Controller
         }
 
         $nouveau_club = $request->validated();
-
         $nouveau_club['club_code'] = Str::random(9);
         while (Club::where('club_code', $nouveau_club['club_code'])->exists()) {
             $nouveau_club['club_code'] = Str::random(9);
         }
+
+        $nouveau_club['proprietaire_id'] = $user->id;
         
         $club = Club::create($nouveau_club);
-
+        
         $club_proprietaire= [
             'member_id' => $user->id,
             'club_id' => $club->id,
