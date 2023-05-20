@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TableMatchController;
+use App\Http\Controllers\TypeEnumController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,23 +19,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-    
+    return $request->user()->only('nom','logo','email');
 });
 
-Route::get('/match', [TableMatchController::class,'index']);
+Route::get('/match', [TableMatchController::class, 'index']);
 
-Route::resource('/user', UserController::class);
 
-Route::get('/matchenum', [UserController::class, "getenums"]);
+Route::get('/matchenum', [TypeEnumController::class, "getenums"]);
 
 
 
 Route::post('auth/signup', [AuthController::class, 'signup']);
 Route::post('auth/login', [AuthController::class, 'login']);
 
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/check-token',[AuthController::class, "verifierToken"]);
+    Route::get('/check-token', [AuthController::class, "verifierToken"]);
     Route::post('auth/logout', [AuthController::class, "logout"]);
     Route::post('match/store', [TableMatchController::class, "store"]);
 });
