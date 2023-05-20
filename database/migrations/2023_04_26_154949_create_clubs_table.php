@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('clubs', function (Blueprint $table) {
             $table->id();
             $table->string("nom_club");
-            $table->string("niveau");
-            $table->string("ligue");
-            $table->string("categorie");
+            $table->string("club_code")->unique();
             $table->foreignId('createur_id')->nullable()->constrained('users');
             $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();

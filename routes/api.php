@@ -20,13 +20,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user()->only('nom','logo','email');
+    return $request->user()->only('nom', 'logo', 'email');
 });
 
 Route::get('/match', [TableMatchController::class, 'index']);
 
 
-Route::get('/matchenum', [TypeEnumController::class, "getenums"]);
+Route::get('/matchenum', [TypeEnumController::class, 'getenums']);
 
 
 
@@ -35,10 +35,13 @@ Route::post('auth/login', [AuthController::class, 'login']);
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/check-token', [AuthController::class, "verifierToken"]);
-    Route::post('auth/logout', [AuthController::class, "logout"]);
+    Route::get('/check-token', [AuthController::class, 'verifierToken']);
+    Route::post('auth/logout', [AuthController::class, 'logout']);
 
-    Route::post('match/store', [TableMatchController::class, "store"]);
+    Route::post('match/store', [TableMatchController::class, 'store']);
 
-    Route::get('/check-utilisateur-club',[ClubController::class, "check_utilisateur"]);
+    Route::controller(ClubController::class)->group(function () {
+        Route::get('/club', 'index');
+        Route::post('/club', 'store');
+    });
 });

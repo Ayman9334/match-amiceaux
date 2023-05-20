@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class ClubRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,19 +22,16 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => [
-                'required',
-            ],
-            'remember' => 'boolean'
+            "nom_club" => "required|string|min:5|max:50"
         ];
     }
     public function messages()
     {
         return [
-            'email.required' => 'Le champ email est requis.',
-            'email.email' => 'Le champ email doit être une adresse email valide.',
-            'password.required' => 'Le champ mot de pass est requis.',
+            "nom_club.required" => "Le nom du club est requis.",
+            "nom_club.string" => "Le nom du club doit être une chaîne de caractères.",
+            "nom_club.min" => "Le nom du club doit contenir au moins :min caractères.",
+            "nom_club.max" => "Le nom du club ne peut pas dépasser :max caractères.",
         ];
     }
 }
