@@ -30,18 +30,19 @@ Route::get('/matchenum', [TypeEnumController::class, 'getenums']);
 
 
 
-Route::post('auth/signup', [AuthController::class, 'signup']);
-Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('/auth/signup', [AuthController::class, 'signup']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/check-token', [AuthController::class, 'verifierToken']);
-    Route::post('auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    Route::post('match/store', [TableMatchController::class, 'store']);
+    Route::post('/match/store', [TableMatchController::class, 'store']);
 
     Route::controller(ClubController::class)->group(function () {
         Route::get('/club', 'index');
         Route::post('/club', 'store');
+        Route::post('/club/invitation/{invCode}', 'gererInvitation');
     });
 });

@@ -56,4 +56,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(ClubMember::class, 'member_id');
     }
+    public function clubDemandes()
+    {
+        return $this->hasMany(ClubDemande::class, 'utilisateur_id');
+    }
 }
