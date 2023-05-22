@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::controller(ClubController::class)->group(function () {
         Route::get('/club', 'index');
         Route::post('/club', 'store');
+        Route::get('/club/invitation', 'afficheInvitations');
         Route::post('/club/invitation/{invCode}', 'gererInvitation');
     });
 });

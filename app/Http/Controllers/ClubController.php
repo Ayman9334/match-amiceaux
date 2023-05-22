@@ -92,7 +92,7 @@ class ClubController extends Controller
         if ($C_existedInvitations >= 20) return response(['message'=>'Le club a beaucoup d\'invitations'],401);
         if ($C_clubmembers>=15) return response(['message'=>'Le club a déjà le maximum de membres'],401);
 
-        $invitation = [
+        $invitation = [ 
             'utilisateur_id' => $user->id,
             'club_id' => $club->id,
         ];
@@ -101,6 +101,19 @@ class ClubController extends Controller
 
         return response()->noContent(201);
     }
+
+    public function afficheInvitations(){
+        $user = auth()->user();
+
+        $clubRole = $user->clubMember->member_role;
+
+        if(!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(403);
+
+        $clubDemandes = $user->clubMember->club->clubDemandes;
+
+        return $clubDemandes;
+    }
+
     // /**
     //  * Show the form for editing the specified resource.
     //  */
