@@ -111,7 +111,7 @@ class ClubController extends Controller
 
         $clubDemandes = $user->clubMember->club->clubDemandes;
 
-        return $clubDemandes;
+        return response($clubDemandes,201);
     }
 
     // /**
