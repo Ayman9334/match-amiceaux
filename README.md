@@ -1,29 +1,24 @@
-# Ouvrez CMD avec le chemin du projet et entrez les commandes suivantes
-
 ## Pour installer le project
-
->composer install
-
->npm install
-
->cd frontend
-
->npm install
-
->cd .\.
+```
+git clone https://github.com/Ayman9334/match-amiceaux.git
+```
+```
+cd match-amiceaux
+```
+```
+composer install
+```
 
 ## Pour preparer la base de donnée
-
->php artisan db:wipe
-
->php migrate --seed
+```
+php artisan db:wipe
+```
+```
+php migrate --seed
+```
 
 ## Pour démarrer le projet
 
-`laravel`
-
->php artisan serve
-
-`react-vite  !dans le frontend fishier` 
-
->npm run dev
+```
+php artisan serve
+```
