@@ -47,3 +47,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/club/invitation/{invCode}', 'gererInvitation');
     });
 });
+
+
+Route::get('/user', [UserController::class, 'index']);
