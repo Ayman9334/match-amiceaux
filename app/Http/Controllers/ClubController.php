@@ -110,7 +110,7 @@ class ClubController extends Controller
         if(!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(403);
 
         $clubDemandes = $user->clubMember->club->clubDemandes;
-
+        //test
         return response($clubDemandes,201);
     }
 
