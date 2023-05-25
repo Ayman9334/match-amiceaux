@@ -75,22 +75,22 @@ class ClubController extends Controller
     public function gererInvitation($invCode){
         $user = auth()->user();
 
-        if ($user->clubMember) return response(['message'=>'Tu a déjà un club'],401);
+        if ($user->clubMember) return response(['message'=>'Tu a déjà un club'],403);
         
-        if(count($user->clubDemandes) >= 5) return response(['message'=>'Vous ne pouvez pas exiger plus de 5 clubs'],401);
+        if(count($user->clubDemandes) >= 5) return response(['message'=>'Vous ne pouvez pas exiger plus de 5 clubs'],403);
 
         $club = Club::where('club_code', $invCode)->first();
 
         if (ClubDemande::where([
             ['club_id',$club->id],
             ['utilisateur_id',$user->id]
-            ])->exists()) return response(['message'=>'vous avez déjà envoyé une invitation à ce club'],401);
+            ])->exists()) return response(['message'=>'vous avez déjà envoyé une invitation à ce club'],403);
 
         $C_existedInvitations =  count($club->clubDemandes);
         $C_clubmembers = count($club->clubMembers);
 
-        if ($C_existedInvitations >= 20) return response(['message'=>'Le club a beaucoup d\'invitations'],401);
-        if ($C_clubmembers>=15) return response(['message'=>'Le club a déjà le maximum de membres'],401);
+        if ($C_existedInvitations >= 20) return response(['message'=>'Le club a beaucoup d\'invitations'],403);
+        if ($C_clubmembers>=15) return response(['message'=>'Le club a déjà le maximum de membres'],403);
 
         $invitation = [ 
             'utilisateur_id' => $user->id,
@@ -110,7 +110,7 @@ class ClubController extends Controller
         if(!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(403);
 
         $clubDemandes = $user->clubMember->club->clubDemandes;
-        //test
+
         return response($clubDemandes,201);
     }
 
