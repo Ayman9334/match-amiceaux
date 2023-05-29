@@ -105,11 +105,11 @@ class ClubController extends Controller
         return response()->noContent(204);
     }
 
-    public function gererInvitation($invCode)
+    public function gererInvitation(string $invCode)
     {
         $user = auth()->user();
 
-        if ($user->clubMember) return response(['message' => 'Tu a déjà un club'], 401);
+        if ($user->clubMember) return response(['message' => 'Tu a déjà un club'], 403);
 
         if (count($user->clubDemandes) >= 5) return response(['message' => 'Vous ne pouvez pas exiger plus de 5 clubs'], 403);
 
@@ -187,5 +187,67 @@ class ClubController extends Controller
         return response()->noContent(204);
     }
 
-    
+    public function exclureMembre(string $exclureId)
+    {
+        $user = auth()->user();
+        $clubRole = $user->clubMember->member_role;
+
+        $exclureMembre = ClubMember::find($exclureId);
+
+        if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
+        if ($user->clubMember->club_id != $exclureMembre->club_id) return abort(401);
+        if ($user->id == $exclureMembre->member_id) return abort(401);
+        if ($clubRole == 'coproprietaire' && $exclureMembre->member_role != "membre") return abort(401);
+
+        $exclureMembre->delete();
+    }
+
+    public function changerole(Request $request){ //prendre changeurId,nouveauRole
+        $user = auth()->user();
+        $usermbr = $user->clubMember;
+        $clubRole = $usermbr->member_role;
+        
+        $changeurMembre = ClubMember::find($request->changeurId);
+        $nouveauRole = $request->nouveauRole;
+
+        if ($clubRole !== 'proprietaire') return abort(401);
+        if ($user->clubMember->club_id != $changeurMembre->club_id) return abort(401);
+        if ($user->id == $changeurMembre->member_id) return abort(401);
+
+        if($nouveauRole == 'coproprietaire' || $nouveauRole == 'membre'){
+            $changeurMembre->member_role = $nouveauRole;
+            $changeurMembre->save();
+            return response()->noContent(204);
+        }
+
+        //changer le club proprieter a l autre utilisatuer
+        if($nouveauRole == 'proprietaire'){
+            $club = $user->clubMember->club;
+            $club->id = $changeurMembre->member_id;
+            $club->save();
+
+            $usermbr->member_role = 'coproprietaire';
+            $usermbr->save();
+            
+            $changeurMembre->member_role = 'proprietaire';
+            $changeurMembre->save();
+
+            return response()->noContent(204);
+        }
+        
+        return abort(401);
+    }
+
+    public function exitClub(){
+        $user = auth()->user();
+
+        $clubMember = $user->clubMember;
+        if (!$clubMember) return abort(401);
+
+        $clubRole = $clubMember->member_role;
+        if ($clubRole === 'proprietaire') return response(['message' => 'En tant que propriétaire de club est impossible de partir.'],405);
+
+        $clubMember->delete();
+        return response()->noContent(204);
+    }
 }
