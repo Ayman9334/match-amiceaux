@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Club;
-use App\Models\ClubDemande;
 use App\Models\ClubMember;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,8 +28,8 @@ class ClubSeeder extends Seeder
         ]);
 
         for ($i = 2; $i <= 6; $i++) {
-            ClubDemande::create([
-                "utilisateur_id" => $i,
+            ClubMember::create([
+                "member_id" => $i,
                 "club_id" => 1,
             ]);
         }
