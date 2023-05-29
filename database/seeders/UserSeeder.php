@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         for ($i = 0; $i <= 5; $i++) {
             $e = $i == 0 ? null : $i;
             User::create([
-                "nom" => "Ayman Test",
+                "nom" => "Ayman Test$e",
                 "email" => "a$e@g.c",
                 "password" => $pw,
                 "n_telephone" => "0658322310",
