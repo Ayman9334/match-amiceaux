@@ -41,8 +41,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/match/store', [TableMatchController::class, 'store']);
 
     Route::controller(ClubController::class)->group(function () {
+        //crud
         Route::get('/club', 'index');
         Route::post('/club', 'store');
+        Route::get('/club/modifier/{id}','edit');
+        Route::put('/club/modifier/{id}','update');
+        Route::delete('/club/suprimer/{id}','destroy');
+        //no-crud
         Route::get('/club/invitation/{invCode}', 'gererInvitation');
         Route::get('/club/invitation', 'afficheInvitations');
         Route::post('/club/invitation','accepteInvitations');

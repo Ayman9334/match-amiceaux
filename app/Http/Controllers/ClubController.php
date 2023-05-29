@@ -151,29 +151,52 @@ class ClubController extends Controller
             'member_id' => $userAccepte->id,
             'club_id' => $club->id,
         ]);
-        return response()->noContent(201);
+        return response()->noContent(204);
     }
     // /**
     //  * Show the form for editing the specified resource.
     //  */
-    // public function edit(Club $club)
-    // {
-    //     //
-    // }
+    public function edit(string $id)
+    {
+        $club =  Club::find($id);
+        return $club->only('id', 'nom_club');
+    }
 
     // /**
     //  * Update the specified resource in storage.
     //  */
-    // public function update(Request $request, Club $club)
-    // {
-    //     //
-    // }
+    public function update(ClubRequest $request, string $id)
+    {
+        $user = auth()->user();
+        $club =  Club::find($id);
 
-    // /**
-    //  * Remove the specified resource from storage.
-    //  */
-    // public function destroy(Club $club)
-    // {
-    //     //
-    // }
+        $clubRole = $user->clubMember->member_role;
+
+        if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
+        if ($club->id !== $user->clubMember->club->id) return abort(401);
+
+        $club->update(['nom_club' => $request->nom_club]);
+
+        return response()->noContent(204);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $user = auth()->user();
+        $club =  Club::find($id);
+
+        $clubRole = $user->clubMember->member_role;
+
+        if ($clubRole !== 'proprietaire') return abort(401);
+        if ($club->id !== $user->clubMember->club->id) return abort(401);
+
+        $club->delete();
+        return response()->noContent(204);
+    }
+
+    
+
 }
