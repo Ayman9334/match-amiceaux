@@ -114,6 +114,7 @@ class ClubController extends Controller
         return response($clubDemandes,201);
     }
 
+    
     // /**
     //  * Show the form for editing the specified resource.
     //  */

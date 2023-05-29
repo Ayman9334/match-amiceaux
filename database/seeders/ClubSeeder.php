@@ -6,6 +6,7 @@ use App\Models\Club;
 use App\Models\ClubMember;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ClubSeeder extends Seeder
 {
@@ -16,9 +17,8 @@ class ClubSeeder extends Seeder
     {
         Club::create([
             'nom_club' => 'itihad',
-            'niveau'=> 'A2',
-            'ligue' => 'L2',
-            'categorie' => 'u6cat',
+            'proprietaire_id'=> 1,
+            'club_code' => Str::random(12)
         ]);
         ClubMember::create([
             "member_id" => 1,
