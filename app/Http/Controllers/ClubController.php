@@ -48,7 +48,7 @@ class ClubController extends Controller
         $user = auth()->user();
 
         if ($user->clubMember) {
-            return response('tu a deja un club',401);
+            return response('tu a deja un club', 401);
         }
 
         $nouveau_club = $request->validated();
@@ -60,8 +60,8 @@ class ClubController extends Controller
         $nouveau_club['proprietaire_id'] = $user->id;
 
         $club = Club::create($nouveau_club);
-        
-        $club_proprietaire= [
+
+        $club_proprietaire = [
             'member_id' => $user->id,
             'club_id' => $club->id,
             'member_role' => 'proprietaire'
@@ -72,27 +72,28 @@ class ClubController extends Controller
         return response()->noContent(201);
     }
 
-    public function gererInvitation($invCode){
+    public function gererInvitation($invCode)
+    {
         $user = auth()->user();
 
-        if ($user->clubMember) return response(['message'=>'Tu a déjà un club'],403);
-        
-        if(count($user->clubDemandes) >= 5) return response(['message'=>'Vous ne pouvez pas exiger plus de 5 clubs'],403);
+        if ($user->clubMember) return response(['message' => 'Tu a déjà un club'], 401);
+
+        if (count($user->clubDemandes) >= 5) return response(['message' => 'Vous ne pouvez pas exiger plus de 5 clubs'], 403);
 
         $club = Club::where('club_code', $invCode)->first();
 
         if (ClubDemande::where([
-            ['club_id',$club->id],
-            ['utilisateur_id',$user->id]
-            ])->exists()) return response(['message'=>'vous avez déjà envoyé une invitation à ce club'],403);
+            ['club_id', $club->id],
+            ['utilisateur_id', $user->id]
+        ])->exists()) return response(['message' => 'vous avez déjà envoyé une invitation à ce club'], 403);
 
         $C_existedInvitations =  count($club->clubDemandes);
         $C_clubmembers = count($club->clubMembers);
 
-        if ($C_existedInvitations >= 20) return response(['message'=>'Le club a beaucoup d\'invitations'],403);
-        if ($C_clubmembers>=15) return response(['message'=>'Le club a déjà le maximum de membres'],403);
+        if ($C_existedInvitations >= 14) return response(['message' => 'Le club a beaucoup d\'invitations'], 403);
+        if ($C_clubmembers >= 15) return response(['message' => 'Le club a déjà le maximum de membres'], 403);
 
-        $invitation = [ 
+        $invitation = [
             'utilisateur_id' => $user->id,
             'club_id' => $club->id,
         ];
@@ -102,19 +103,56 @@ class ClubController extends Controller
         return response()->noContent(201);
     }
 
-    public function afficheInvitations(){
+    public function afficheInvitations()
+    {
         $user = auth()->user();
 
         $clubRole = $user->clubMember->member_role;
 
-        if(!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(403);
+        if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
 
         $clubDemandes = $user->clubMember->club->clubDemandes;
 
-        return response($clubDemandes,201);
+        return response($clubDemandes, 201);
     }
 
-    
+    public function accepteInvitations(Request $request)
+    {
+        $user = auth()->user();
+
+        $clubRole = $user->clubMember->member_role;
+
+        if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
+
+        $acceptation = $request->acceptation; //accepted :true / declined : false
+        $demande = ClubDemande::find($request->demandeId);
+
+        $club = $user->clubMember->club;
+
+        if (!($demande && $demande->club_id == $club->id)) return abort(401); //check if demande clean
+
+        $C_clubmembers = count($club->clubMembers);
+        if ($C_clubmembers >= 15) return response(['message' => 'Le club a déjà le maximum de membres'], 405);
+
+        if (!$acceptation) {
+            $demande->delete();
+            return response()->noContent(201);
+        }
+
+        $userAccepte = User::find($demande->utilisateur_id);
+        if ($userAccepte->clubMember) {
+            $demande->delete();
+            return response(['message' => "$userAccepte->nom est deja un club"], 403);
+        }
+
+        // ajouter lutilisateur a le club
+        $userAccepte->clubDemandes()->delete();
+        ClubMember::create([
+            'member_id' => $userAccepte->id,
+            'club_id' => $club->id,
+        ]);
+        return response()->noContent(201);
+    }
     // /**
     //  * Show the form for editing the specified resource.
     //  */
