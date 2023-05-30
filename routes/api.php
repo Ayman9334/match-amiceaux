@@ -53,6 +53,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/club/invitation','accepteInvitations');
         Route::delete('/club/exclure/{exclureId}', 'exclureMembre');
         Route::post('/club/changeroles', 'changerole');
+        Route::get('/club/regenerercode','regenererCode');
         Route::delete('/club/exit','exitClub');
     });
 });

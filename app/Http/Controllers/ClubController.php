@@ -238,6 +238,22 @@ class ClubController extends Controller
         return abort(401);
     }
 
+    public function regenererCode(){
+        $user = auth()->user();
+        $clubRole = $user->clubMember->member_role;
+
+        if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
+
+        $club = $user->clubMember->club;
+
+        $club->club_code = Str::random(12);
+        while (Club::where('club_code', $club->club_code)->exists()) {
+            $club->club_code = Str::random(12);
+        }
+        $club->save();
+        return ['club_code' => $club->club_code];
+    }
+
     public function exitClub(){
         $user = auth()->user();
 
