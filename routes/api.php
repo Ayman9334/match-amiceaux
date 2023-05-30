@@ -35,9 +35,11 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    //auth
     Route::get('/check-token', [AuthController::class, 'verifierToken']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
+    //match
     Route::post('/match/store', [TableMatchController::class, 'store']);
 
     Route::controller(ClubController::class)->group(function () {
@@ -60,6 +62,3 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/club/exit','exitClub');
     });
 });
-
-
-Route::get('/user', [UserController::class, 'index']);

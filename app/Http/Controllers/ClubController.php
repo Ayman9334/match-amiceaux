@@ -29,11 +29,12 @@ class ClubController extends Controller
 
         $members = User::select('id', 'nom')->whereIn('id', $clubMembersIds)
             ->with(['clubMember' => function ($query) {
-                $query->select('id as member_id', 'member_role as role');
+                $query->select('id as member_id', 'member_role');
             }])
             ->get();
 
         return [
+            'member_id' => $user->clubMember->id,
             'nom_club' => $club->nom_club,
             'role' => $user->clubMember->member_role,
             'members_number' => count($members),
@@ -145,8 +146,16 @@ class ClubController extends Controller
         if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
 
         $clubDemandes = $user->clubMember->club->clubDemandes;
+        $demandes = $clubDemandes->map(function ($demande) {
+            $demandUser = $demande->utilisateur;
+            return [
+                'demandeId' => $demande->id,
+                'nom' => $demandUser->nom,
+                'logo' => $demandUser->logo
+            ];
+        });
 
-        return response($clubDemandes, 201);
+        return response($demandes, 201);
     }
 
     public function accepteInvitations(Request $request)
@@ -202,11 +211,12 @@ class ClubController extends Controller
         $exclureMembre->delete();
     }
 
-    public function changerole(Request $request){ //prendre changeurId,nouveauRole
+    public function changerole(Request $request)
+    { //prendre changeurId,nouveauRole
         $user = auth()->user();
         $usermbr = $user->clubMember;
         $clubRole = $usermbr->member_role;
-        
+
         $changeurMembre = ClubMember::find($request->changeurId);
         $nouveauRole = $request->nouveauRole;
 
@@ -214,31 +224,32 @@ class ClubController extends Controller
         if ($user->clubMember->club_id != $changeurMembre->club_id) return abort(401);
         if ($user->id == $changeurMembre->member_id) return abort(401);
 
-        if($nouveauRole == 'coproprietaire' || $nouveauRole == 'membre'){
+        if ($nouveauRole == 'coproprietaire' || $nouveauRole == 'membre') {
             $changeurMembre->member_role = $nouveauRole;
             $changeurMembre->save();
             return response()->noContent(204);
         }
 
         //changer le club proprieter a l autre utilisatuer
-        if($nouveauRole == 'proprietaire'){
+        if ($nouveauRole == 'proprietaire') {
             $club = $user->clubMember->club;
             $club->id = $changeurMembre->member_id;
             $club->save();
 
             $usermbr->member_role = 'coproprietaire';
             $usermbr->save();
-            
+
             $changeurMembre->member_role = 'proprietaire';
             $changeurMembre->save();
 
             return response()->noContent(204);
         }
-        
+
         return abort(401);
     }
 
-    public function regenererCode(){
+    public function regenererCode()
+    {
         $user = auth()->user();
         $clubRole = $user->clubMember->member_role;
 
@@ -254,14 +265,15 @@ class ClubController extends Controller
         return ['club_code' => $club->club_code];
     }
 
-    public function exitClub(){
+    public function exitClub()
+    {
         $user = auth()->user();
 
         $clubMember = $user->clubMember;
         if (!$clubMember) return abort(401);
 
         $clubRole = $clubMember->member_role;
-        if ($clubRole === 'proprietaire') return response(['message' => 'En tant que propriétaire de club est impossible de partir.'],405);
+        if ($clubRole === 'proprietaire') return response(['message' => 'En tant que propriétaire de club est impossible de partir.'], 405);
 
         $clubMember->delete();
         return response()->noContent(204);
