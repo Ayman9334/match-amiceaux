@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,12 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('fake:token', function () {
+    if(Auth::attempt(['email'=>'a@g.c','password'=>'Ayman123'])){
+        /** @var User $user */
+        $user = Auth::user();
+        $token = $user->createToken('main')->plainTextToken;
+        $this->comment($token);
+    }
+});

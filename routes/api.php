@@ -48,12 +48,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/club/modifier/{id}','update');
         Route::delete('/club/suprimer/{id}','destroy');
         //no-crud
+        //invitation
         Route::get('/club/invitation/{invCode}', 'gererInvitation');
         Route::get('/club/invitation', 'afficheInvitations');
         Route::post('/club/invitation','accepteInvitations');
+        //admin methods
         Route::delete('/club/exclure/{exclureId}', 'exclureMembre');
         Route::post('/club/changeroles', 'changerole');
         Route::get('/club/regenerercode','regenererCode');
+        //ext
         Route::delete('/club/exit','exitClub');
     });
 });
