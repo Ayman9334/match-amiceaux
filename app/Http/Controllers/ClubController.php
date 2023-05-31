@@ -22,16 +22,17 @@ class ClubController extends Controller
         }
 
         $club = $user->clubMember->club;
+        $clubMembers = $club->clubMembers;
 
-        $clubMembersIds = $club->clubMembers->map(function ($clubMember) {
-            return $clubMember->member_id;
+        $members = $clubMembers->map(function ($clubMember) {
+            $member = $clubMember->member;
+            return [
+                'utilisateur_id' => $member->id,
+                'member_id' => $clubMember->id,
+                'nom' => $member->nom,
+                'member_role' => $clubMember->member_role
+            ];
         });
-
-        $members = User::select('id', 'nom')->whereIn('id', $clubMembersIds)
-            ->with(['clubMember' => function ($query) {
-                $query->select('id as member_id', 'member_role');
-            }])
-            ->get();
 
         $resData = [
             'member_id' => $user->clubMember->id,
