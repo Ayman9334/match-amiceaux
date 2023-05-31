@@ -33,13 +33,17 @@ class ClubController extends Controller
             }])
             ->get();
 
-        return [
+        $resData = [
             'member_id' => $user->clubMember->id,
             'nom_club' => $club->nom_club,
             'role' => $user->clubMember->member_role,
             'members_number' => count($members),
             'membres' => $members,
         ];
+
+        if ($resData['role'] === 'proprietaire' || $resData['role'] === 'coproprietaire') $resData['code'] = $club->club_code;
+
+        return $resData;
     }
 
     public function store(ClubRequest $request)
@@ -158,7 +162,7 @@ class ClubController extends Controller
         return response($demandes, 201);
     }
 
-    public function accepteInvitations(Request $request)
+    public function accepteInvitations(Request $request) //acceptation,demandeId
     {
         $user = auth()->user();
 
