@@ -160,7 +160,7 @@ class ClubController extends Controller
             ];
         });
 
-        return response($demandes, 201);
+        return $demandes;
     }
 
     public function accepteInvitations(Request $request) //acceptation,demandeId
