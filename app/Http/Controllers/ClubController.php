@@ -89,10 +89,12 @@ class ClubController extends Controller
 
         $clubRole = $user->clubMember->member_role;
 
+        $updatedclub = $request->validated();
+
         if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
         if ($club->id !== $user->clubMember->club->id) return abort(401);
-
-        $club->update(['nom_club' => $request->nom_club]);
+        
+        $club->update($updatedclub);
 
         return response()->noContent(204);
     }
