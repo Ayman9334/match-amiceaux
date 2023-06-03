@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClubController;
-use App\Http\Controllers\TableMatchController;
+use App\Http\Controllers\MatchController;
 use App\Http\Controllers\TypeEnumController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user()->only('nom', 'logo', 'email');
 });
 
-Route::get('/match', [TableMatchController::class, 'index']);
+Route::get('/match', [MatchController::class, 'index']);
 
 
 Route::get('/matchenum', [TypeEnumController::class, 'getenums']);
@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     //match
-    Route::post('/match/store', [TableMatchController::class, 'store']);
+    Route::post('/match/store', [MatchController::class, 'store']);
 
     Route::controller(ClubController::class)->group(function () {
         //crud

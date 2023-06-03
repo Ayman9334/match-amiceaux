@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TableMatch extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
         'organisateur_id',
         'match_date',
@@ -18,4 +19,9 @@ class TableMatch extends Model
         'ligue',
         'description'
     ];
+
+    public function clubDemandes()
+    {
+        return $this->hasMany(MatchMedia::class);
+    }
 }
