@@ -28,27 +28,30 @@ class StoreMatchRequest extends FormRequest
             "match_date" => "required|date_format:Y-m-d H:i|after_or_equal:$matchMinDate",
             "nembre_joueur" => "required|numeric|min:5|max:12",
             "lieu" => "required|max:150",
-            'niveau' => [
-                'required',
-                Rule::exists('type_enums_details', 'code')
-                    ->where('type_enum_id', 2),
+            "lieu2" => "max:150",
+            "latitude" => "required",
+            "longitude" => "required",
+            "niveau" => [
+                "required",
+                Rule::exists("type_enums_details", "code")
+                    ->where("type_enum_id", 2),
             ],
-            'categorie' => [
-                'required',
-                Rule::exists('type_enums_details', 'code')
-                    ->where('type_enum_id', 1),
+            "categorie" => [
+                "required",
+                Rule::exists("type_enums_details", "code")
+                    ->where("type_enum_id", 1),
             ],
-            'ligue' => [
-                'required',
-                Rule::exists('type_enums_details', 'code')
-                    ->where('type_enum_id', 4),
+            "ligue" => [
+                "required",
+                Rule::exists("type_enums_details", "code")
+                    ->where("type_enum_id", 4),
             ],
             "description" => "required|min:30|max:200"
         ];
     }
 
     public function messages()
-    {  
+    {
         $matchMinDate = Carbon::now()->addDays(4)->format('d/m/Y H:i');
         return [
             "match_date.required" => "La date et l'heure du match sont obligatoires.",
@@ -62,6 +65,11 @@ class StoreMatchRequest extends FormRequest
 
             "lieu.required" => "Le lieu du match est obligatoire.",
             "lieu.max" => "Le lieu du match ne doit pas dépasser :max caractères.",
+
+            "lieu2.max" => "Le champ Lieu 2 ne doit pas dépasser :max caractères.",
+
+            "latitude.required" => "La latitude est obligatoire.",
+            "longitude.required" => "La longitude est obligatoire.",
 
             'niveau.required' => "Le niveau du match est obligatoire.",
             'niveau.exists' => "Le niveau du match sélectionné est invalide.",

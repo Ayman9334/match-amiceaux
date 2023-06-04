@@ -34,13 +34,13 @@ class MatchController extends Controller
     {
         $matchData = $request->validated();
         $photos = [];
-
+        
         if ($request->hasFile('images')) {
-            $files = $request->file('images');
+            $medias = $request->file('images');
             //validation
-            foreach ($files as $file) {
+            foreach ($medias as $media) {
                 $validator = Validator::make(
-                    ['image' => $file],
+                    ['image' => $media],
                     ['image' => 'required|mimes:jpg,png,jpeg|max:2500']
                 );
                 if ($validator->fails()) {
@@ -48,9 +48,9 @@ class MatchController extends Controller
                 }
             }
             //store les photo
-            foreach ($files as $file) {
-                $photo = $file->store('images/matchs', 'public');
-                $photos[] = ['path' => $photo, 'extension' => $file->getClientOriginalExtension()];
+            foreach ($medias as $media) {
+                $photo = $media->store('images/matchs', 'public');
+                $photos[] = ['path' => $photo, 'extension' => $media->getClientOriginalExtension()];
             }
         }
 

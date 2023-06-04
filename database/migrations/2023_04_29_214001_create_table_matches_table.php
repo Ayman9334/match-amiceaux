@@ -19,6 +19,9 @@ return new class extends Migration
             $table->dateTime('match_date')->format('Y-m-d H:i');
             $table->string('nembre_joueur');
             $table->string('lieu');
+            $table->string('lieu2')->nullable();
+            $table->decimal('latitude', 18, 16);
+            $table->decimal('longitude', 19, 16);
             $table->string('niveau');
             $table->string('categorie');
             $table->string('ligue');

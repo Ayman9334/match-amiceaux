@@ -8,17 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class TableMatch extends Model
 {
     use HasFactory;
-    
-    protected $fillable = [
-        'organisateur_id',
-        'match_date',
-        'nembre_joueur',
-        'lieu',
-        'niveau',
-        'categorie',
-        'ligue',
-        'description'
-    ];
+
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 
     public function clubDemandes()
     {
