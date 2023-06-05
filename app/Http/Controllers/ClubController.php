@@ -123,6 +123,8 @@ class ClubController extends Controller
 
         $club = Club::where('club_code', $invCode)->first();
 
+        if (!$club) return response(['message' => 'il n\'y a pas de club avec ce code'], 403);
+
         if (ClubDemande::where([
             ['club_id', $club->id],
             ['utilisateur_id', $user->id]
