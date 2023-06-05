@@ -23,16 +23,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user()->only('nom', 'logo', 'email');
 });
 
-Route::get('/match', [MatchController::class, 'index']);
-
-
 Route::get('/matchenum', [TypeEnumController::class, 'getenums']);
-
-
 
 Route::post('/auth/signup', [AuthController::class, 'signup']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
+Route::get('/match', [MatchController::class, 'index']);
+Route::post('/match/filtre-recherche', [MatchController::class, 'filtreRecherche']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     //auth
@@ -40,16 +37,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     //match
-    Route::post('/match/store', [MatchController::class, 'store']);
+    Route::controller(MatchController::class)->group(function () {
+        //CRUD
+        Route::post('/match', 'store');
+        //NO-CRUD
+    });
+    
 
     Route::controller(ClubController::class)->group(function () {
-        //crud
+        //CRUD
         Route::get('/club', 'index');
         Route::post('/club', 'store');
         Route::get('/club/modifier/{id}','edit');
         Route::put('/club/modifier/{id}','update');
         Route::delete('/club/suprimer/{id}','destroy');
-        //no-crud
+        //NO-CRUD
         //invitation
         Route::get('/club/invitation/{invCode}', 'gererInvitation');
         Route::get('/club/invitation', 'afficheInvitations');
@@ -58,7 +60,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/club/exclure/{exclureId}', 'exclureMembre');
         Route::post('/club/changeroles', 'changerole');
         Route::get('/club/regenerercode','regenererCode');
-        //ext
+        //ECT
         Route::delete('/club/exit','exitClub');
     });
 });

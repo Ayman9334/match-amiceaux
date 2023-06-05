@@ -2,39 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FiltreRechercheRequest;
 use App\Http\Requests\StoreMatchRequest;
 use App\Models\MatchMedia;
 use App\Models\TableMatch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MatchController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return TableMatch::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreMatchRequest $request)
     {
         $matchData = $request->validated();
         $photos = [];
-        
+
         if ($request->hasFile('images')) {
             $medias = $request->file('images');
             //validation
@@ -66,35 +58,51 @@ class MatchController extends Controller
         return response()->noContent();
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(TableMatch $table_matche)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(TableMatch $table_matche)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, TableMatch $table_matche)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(TableMatch $table_matche)
     {
         //
+    }
+
+    //NO CRUD
+
+    public function filtreRecherche(FiltreRechercheRequest $request)
+    {
+        $filtreData = $request->validated();
+        $latitude = $filtreData['latitude'];
+        $longitude = $filtreData['longitude'];
+        $distance = $filtreData['range'];
+
+        $matchs = TableMatch::select('id', 'match_date', 'nembre_joueur', 'lieu', 'lieu2', 'niveau', 'categorie', 'ligue')
+            ->selectRaw(
+                "(6371 * acos(cos(radians($latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians($longitude)) + sin(radians($latitude)) * sin(radians(latitude)))) AS distance"
+            )
+            ->having('distance', '<=', $distance)
+            ->orderBy('distance', 'asc');
+
+        $columnsCheck = ['niveaux' => 'niveau', 'categories' => 'categorie', 'ligues' => 'ligue'];
+        foreach ($columnsCheck as $key => $value) {
+            if (isset($filtreData[$key]) && count($filtreData[$key])) {
+                $matchs->whereIn($value, $filtreData[$key]);
+            }
+        }
+
+        $results = $matchs->get();
+
+        return response($results, 200);
     }
 }
