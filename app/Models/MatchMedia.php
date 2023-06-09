@@ -17,8 +17,8 @@ class MatchMedia extends Model
         'dernier_editeur_id'
     ];
 
-    public function tablematch()
+    public function tableMatch()
     {
-        return $this->hasMany(TableMatch::class);
+        return $this->belongsTo(TableMatch::class,'match_id');
     }
 }

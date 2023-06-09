@@ -100,9 +100,15 @@ class MatchController extends Controller
                 $matchs->whereIn($value, $filtreData[$key]);
             }
         }
+        
+        $dataEnvoyer = $matchs->get()->map(function($match){
+            $matchmedia = $match->matchMedias()->orderBy('id','asc')->first();
+            $match['media'] = $matchmedia?->media;
+            $match['media_type'] = $matchmedia?->media_type;
 
-        $results = $matchs->get();
+            return $match;
+        });
 
-        return response($results, 200);
+        return response($dataEnvoyer, 200);
     }
 }

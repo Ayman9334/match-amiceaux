@@ -11,8 +11,9 @@ class TableMatch extends Model
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function clubDemandes()
+    public function matchMedias()
     {
-        return $this->hasMany(MatchMedia::class);
+        return $this->hasMany(MatchMedia::class,'match_id');
     }
+
 }
