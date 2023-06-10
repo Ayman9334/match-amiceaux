@@ -15,5 +15,8 @@ class TableMatch extends Model
     {
         return $this->hasMany(MatchMedia::class,'match_id');
     }
-
+    public function organisateur()
+    {
+        return $this->belongsTo(User::class,'organisateur_id');
+    }
 }

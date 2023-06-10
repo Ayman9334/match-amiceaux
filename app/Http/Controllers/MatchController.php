@@ -6,6 +6,7 @@ use App\Http\Requests\FiltreRechercheRequest;
 use App\Http\Requests\StoreMatchRequest;
 use App\Models\MatchMedia;
 use App\Models\TableMatch;
+use App\Models\TypeEnumsDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -87,7 +88,7 @@ class MatchController extends Controller
         $longitude = $filtreData['longitude'];
         $distance = $filtreData['range'];
 
-        $matchs = TableMatch::select('id', 'match_date', 'nembre_joueur', 'lieu', 'lieu2', 'niveau', 'categorie', 'ligue')
+        $matchs = TableMatch::select('id', 'organisateur_id', 'match_date', 'nembre_joueur', 'lieu', 'lieu2', 'niveau', 'categorie', 'ligue')
             ->selectRaw(
                 "(6371 * acos(cos(radians($latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians($longitude)) + sin(radians($latitude)) * sin(radians(latitude)))) AS distance"
             )
@@ -100,12 +101,20 @@ class MatchController extends Controller
                 $matchs->whereIn($value, $filtreData[$key]);
             }
         }
-        
-        $dataEnvoyer = $matchs->get()->map(function($match){
-            $matchmedia = $match->matchMedias()->orderBy('id','asc')->first();
+
+        $dataEnvoyer = $matchs->get()->map(function ($match) {
+            $match['organisateur_nom'] = $match->organisateur->nom;
+            unset($match['organisateur'], $match['organisateur_id']);
+
+            $matchmedia = $match->matchMedias()->orderBy('id', 'asc')->first();
             $match['media'] = $matchmedia?->media;
             $match['media_type'] = $matchmedia?->media_type;
 
+            $enums = ['ligue','categorie','niveau'];
+            foreach ($enums as $enum){
+                $match[$enum] = TypeEnumsDetail::where('code', $match[$enum])->value('libelle');
+            }
+            $match['distance']= round($match['distance'],1).'km';
             return $match;
         });
 
