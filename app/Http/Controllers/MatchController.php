@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FiltreRechercheRequest;
 use App\Http\Requests\StoreMatchRequest;
 use App\Models\MatchDemamde;
+use App\Models\MatchDemandeUser;
 use App\Models\MatchMedia;
 use App\Models\TableMatch;
 use App\Models\TypeEnumsDetail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class MatchController extends Controller
@@ -28,8 +28,8 @@ class MatchController extends Controller
             ->having('distance', '<=', $distance)
             ->orderBy('distance', 'asc');
 
-        
-        abort_unless($matchs->exists(),204);
+
+        abort_unless($matchs->exists(), 204);
 
         $columnsCheck = ['niveaux' => 'niveau', 'categories' => 'categorie', 'ligues' => 'ligue'];
         foreach ($columnsCheck as $key => $value) {
@@ -37,7 +37,7 @@ class MatchController extends Controller
                 $matchs->whereIn($value, $filtreData[$key]);
             }
         }
-        
+
         $dataEnvoyer = $matchs->get()->map(function ($match) {
             $match['organisateur_nom'] = $match->organisateur->nom;
             unset($match['organisateur'], $match['organisateur_id']);
@@ -86,8 +86,8 @@ class MatchController extends Controller
     public function show(string $id)
     {
         $match = TableMatch::find($id);
-        
-        abort_if(!$match,404);
+
+        abort_if(!$match, 404);
 
         $match['medias'] = $match->matchMedias->pluck('media');
         unset($match['matchMedias']);
@@ -116,23 +116,49 @@ class MatchController extends Controller
     {
         $user = auth()->user();
         $match = TableMatch::find($match_id);
-        abort_if(!$match,404);
+        abort_unless($match, 404, 'match n\'exist pas');
 
         $userClubId = $user->clubMember->club_id;
         $request->validate([
-            "InvType"=> "required|in:solo,club",
+            "InvType" => "required|string|in:solo,club",
+            "equipe" => "required|string|in:A,B",
             "InvClub" => "array",
-            "InvClub.*" => [Rule::exists('club_members','id')->where('club_id',$userClubId)],
+            "InvClub.*" => [
+                Rule::exists('club_members', 'id')->where('club_id', $userClubId),
+                'distinct',
+            ],
         ]);
 
-        $Invitations = $user->matchDemamdes;
+        $userInvitations = $user->matchDemamdes;
 
-        abort_if(count($Invitations) >= 5, 403, 'tu a depasser le max d\'invitations');
+        abort_if(count($userInvitations) >= 5, 403, 'Vous avez dépassé le nombre maximum d\'invitations');
 
-        abort_if($Invitations->where('match_id',$match->id)->first(),403,'tu a deja envoyer un invitation a ce match');
+        abort_if($userInvitations->where('match_id', $match->id)->first(), 403, 'Vous avez déjà envoyé une invitation à ce match');
 
-        // if($request->InvType == "solo"){
-            
-        // }
+        $matchDemamde = new MatchDemamde;
+        $matchDemamde->utilisateur_id = $user->id;
+        $matchDemamde->match_id = $match->id;
+
+        if ($request->InvType == "solo") {
+
+            $matchDemamde->invitation_type = 'solo';
+            $matchDemamde->save();
+        } else {
+            //using club
+            abort_if(count($request->InvClub) < 2, 403, 'vous doit acceder 2 membres ou plus');
+            $userClubRole = $user->clubMember->member_role;
+            abort_unless(($userClubRole == 'proprietaire' || $userClubRole == 'coproprietaire'), 401);
+
+            $matchDemamde->invitation_type = 'club';
+            $matchDemamde->save();
+
+            $clubMemberIds = $request->InvClub;
+            foreach ($clubMemberIds as $clubMemberId) {
+                $matchDemamdeUser = new MatchDemandeUser;
+                $matchDemamdeUser->club_member_id = $clubMemberId;
+                $matchDemamde->matchDemamdeUsers()->save($matchDemamdeUser);
+            }
+        }
+        return response()->noContent();
     }
 }

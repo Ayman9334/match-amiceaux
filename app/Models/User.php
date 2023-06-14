@@ -51,7 +51,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    //realations
+    public function clubs()
+    {
+        return $this->belongsToMany(Club::class, 'club_members', 'member_id', 'club_id');
+    }
     public function clubMember()
     {
         return $this->hasOne(ClubMember::class, 'member_id');
@@ -62,11 +66,10 @@ class User extends Authenticatable
     }
     public function matchs()
     {
-        return $this->hasMany(TableMatch::class,'organisateur_id');
+        return $this->hasMany(TableMatch::class, 'organisateur_id');
     }
     public function matchDemamdes()
     {
-        return $this->hasMany(MatchDemamde::class,'utilisateur_id');
+        return $this->hasMany(MatchDemamde::class, 'utilisateur_id');
     }
-    
 }

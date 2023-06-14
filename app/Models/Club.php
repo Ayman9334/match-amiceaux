@@ -11,6 +11,11 @@ class Club extends Model
 
     protected $fillable = ['nom_club', 'club_code', 'proprietaire_id'];
 
+    //relations
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'club_members', 'club_id', 'member_id');
+    }
     public function clubMembers()
     {
         return $this->hasMany(ClubMember::class, 'club_id');
