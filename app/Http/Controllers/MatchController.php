@@ -135,6 +135,21 @@ class MatchController extends Controller
 
         abort_if($userInvitations->where('match_id', $match->id)->first(), 403, 'Vous avez déjà envoyé une invitation à ce match');
 
+        $nembre_joueur = $match->nembre_joueur;
+        $matchMembres = $match->matchMembres->where('equipe', $request->equipe);
+        $numberInv = $request->has('InvClub') ? count($request->InvClub) : 0;
+
+        abort_if(
+            count($matchMembres) >= $nembre_joueur,
+            403,
+            'L\'équipe sélectionnée a déjà atteint le nombre maximum de joueurs pour ce match.'
+        );
+        abort_if(
+            count($matchMembres) + $numberInv > $nembre_joueur,
+            403,
+            'L\'ajout de membres supplémentaires dépasserait le nombre maximum de joueurs pour ce match.'
+        );
+
         $matchDemamde = new MatchDemamde;
         $matchDemamde->utilisateur_id = $user->id;
         $matchDemamde->match_id = $match->id;
@@ -145,7 +160,7 @@ class MatchController extends Controller
             $matchDemamde->save();
         } else {
             //using club
-            abort_if(count($request->InvClub) < 2, 403, 'vous doit acceder 2 membres ou plus');
+            abort_if($numberInv < 2, 403, 'vous doit acceder 2 membres ou plus');
             $userClubRole = $user->clubMember->member_role;
             abort_unless(($userClubRole == 'proprietaire' || $userClubRole == 'coproprietaire'), 401);
 
