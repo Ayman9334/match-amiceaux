@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TableMatch::class,'organisateur_id');
     }
+    public function matchDemamdes()
+    {
+        return $this->hasMany(MatchDemamde::class,'utilisateur_id');
+    }
+    
 }

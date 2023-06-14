@@ -28,8 +28,8 @@ Route::get('/matchenum', [TypeEnumController::class, 'getenums']);
 Route::post('/auth/signup', [AuthController::class, 'signup']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
-Route::get('/match', [MatchController::class, 'index']);
-Route::post('/match/filtre-recherche', [MatchController::class, 'filtreRecherche']);
+Route::post('/match/affiche-matchs', [MatchController::class, 'index']);
+Route::get('/match/affiche-match/{id}', [MatchController::class, 'show']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     //auth
@@ -41,8 +41,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //CRUD
         Route::post('/match', 'store');
         //NO-CRUD
+        Route::post('/match/envoyer-invitation/{id}','EnvoyerInvitation');
     });
-    
 
     Route::controller(ClubController::class)->group(function () {
         //CRUD
