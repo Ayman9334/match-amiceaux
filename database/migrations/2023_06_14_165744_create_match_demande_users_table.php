@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('match_membres', function (Blueprint $table) {
+        Schema::create('match_demande_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('utilisateur_id')->constrained('users')
+            $table->foreignId('club_member_id')->constrained('club_members')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('match_id')->constrained('table_matches')
+            $table->foreignId('match_demamde_id')->constrained('match_demamdes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('club_id')->nullable()->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            $table->string('equipe');
             $table->foreignId('createur_id')->nullable()->constrained('users');
             $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('match_membres');
+        Schema::dropIfExists('match_demande_users');
     }
 };

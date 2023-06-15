@@ -29,6 +29,8 @@ class StoreMatchRequest extends FormRequest
             "nembre_joueur" => "required|numeric|min:5|max:12",
             "lieu" => "required|max:150",
             "lieu2" => "max:150",
+            "images" => "array",
+            "images.*" => "mimes:jpg,png,jpeg|max:2500",
             "latitude" => "required",
             "longitude" => "required",
             "niveau" => [
@@ -46,7 +48,7 @@ class StoreMatchRequest extends FormRequest
                 Rule::exists("type_enums_details", "code")
                     ->where("type_enum_id", 4),
             ],
-            "description" => "required|min:30|max:200"
+            "description" => "required|min:30|max:1500"
         ];
     }
 
@@ -67,6 +69,10 @@ class StoreMatchRequest extends FormRequest
             "lieu.max" => "Le lieu du match ne doit pas dépasser :max caractères.",
 
             "lieu2.max" => "Le champ Lieu 2 ne doit pas dépasser :max caractères.",
+
+            'images.array' => '',
+            'images.*.mimes' => 'Chaque images doit être un fichier de type JPG, PNG ou JPEG.',
+            'images.*.max' => 'Chaque image ne doit pas dépasser (2,5 Mo).',
 
             "latitude.required" => "La latitude est obligatoire.",
             "longitude.required" => "La longitude est obligatoire.",

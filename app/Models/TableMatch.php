@@ -19,4 +19,9 @@ class TableMatch extends Model
     {
         return $this->belongsTo(User::class,'organisateur_id');
     }
+    public function matchMembres()
+    {
+        return $this->hasMany(MatchMembre::class,'match_id');
+    }
+    
 }

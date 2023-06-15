@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('categorie');
             $table->string('ligue');
             $table->longText('description');
+            $table->string('statut')->default('disponible'); //en_attente - joue
             $table->foreignId('createur_id')->nullable()->constrained('users');
             $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
