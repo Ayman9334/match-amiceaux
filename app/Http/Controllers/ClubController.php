@@ -37,6 +37,7 @@ class ClubController extends Controller
         $resData = [
             'member_id' => $user->clubMember->id,
             'nom_club' => $club->nom_club,
+            'id' => $club->id,
             'role' => $user->clubMember->member_role,
             'members_number' => count($members),
             'membres' => $members,
