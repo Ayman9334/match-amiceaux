@@ -5,6 +5,7 @@ use App\Http\Controllers\ClubController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\TypeEnumController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -63,4 +64,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //ECT
         Route::delete('/club/exit','exitClub');
     });
+});
+
+
+
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/members', 'index');
+    Route::post('/members', 'createMember');
+    Route::put('/members/{id}','updateMember');
+    Route::delete('/members/{id}','deleteMember');
 });
