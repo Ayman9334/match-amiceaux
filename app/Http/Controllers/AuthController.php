@@ -57,6 +57,10 @@ class AuthController extends Controller
     }
 
     public function verifierToken(){
-        return response('',204);
+        $user = auth()->user();
+        return [
+            'nom' => $user->nom,
+            'role' => $user->role,
+        ];
     }
 }
