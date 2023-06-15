@@ -9,8 +9,16 @@ class MatchDemamde extends Model
 {
     use HasFactory;
 
-    public function matchDemamdeUsers()
+    public function utilisateur()
     {
-        return $this->hasMany(MatchDemandeUser::class,'match_demamde_id');
+        return $this->belongsTo(User::class, 'utilisateur_id');
+    }
+    public function demandeurs()
+    {
+        return $this->hasMany(MatchDemandeUser::class, 'match_demamde_id');
+    }
+    public function match()
+    {
+        return $this->belongsTo(TableMatch::class, 'match_id');
     }
 }

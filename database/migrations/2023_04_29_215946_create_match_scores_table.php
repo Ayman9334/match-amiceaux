@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('match_id')->constrained('table_matches')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()
+            $table->foreignId('utilisateur_id')->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('equipe');

@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/match', 'store');
         //NO-CRUD
         Route::post('/match/envoyer-invitation/{id}','EnvoyerInvitation');
+        Route::post('/match/accepter-invitation/{decision}/{id}','AccepterInvitation');
     });
 
     Route::controller(ClubController::class)->group(function () {

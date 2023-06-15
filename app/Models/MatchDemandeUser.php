@@ -13,4 +13,8 @@ class MatchDemandeUser extends Model
     {
         return $this->belongsTo(MatchDemamde::class,'match_demamde_id');
     }
+    public function clubMembre()
+    {
+        return $this->belongsTo(ClubMember::class,'club_member_id');
+    }
 }

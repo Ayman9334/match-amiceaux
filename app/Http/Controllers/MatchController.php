@@ -7,8 +7,10 @@ use App\Http\Requests\StoreMatchRequest;
 use App\Models\MatchDemamde;
 use App\Models\MatchDemandeUser;
 use App\Models\MatchMedia;
+use App\Models\MatchMembre;
 use App\Models\TableMatch;
 use App\Models\TypeEnumsDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -116,43 +118,52 @@ class MatchController extends Controller
     {
         $user = auth()->user();
         $match = TableMatch::find($match_id);
+
         abort_unless($match, 404, 'match n\'exist pas');
 
-        $userClubId = $user->clubMember->club_id;
         $request->validate([
             "InvType" => "required|string|in:solo,club",
             "equipe" => "required|string|in:A,B",
             "InvClub" => "array",
-            "InvClub.*" => [
-                Rule::exists('club_members', 'id')->where('club_id', $userClubId),
-                'distinct',
-            ],
         ]);
 
         $userInvitations = $user->matchDemamdes;
 
-        abort_if(count($userInvitations) >= 5, 403, 'Vous avez dépassé le nombre maximum d\'invitations');
-
-        abort_if($userInvitations->where('match_id', $match->id)->first(), 403, 'Vous avez déjà envoyé une invitation à ce match');
+        abort_if(
+            $match->organisateur_id == $user->id,
+            403,
+            'visiter la panel pour ajouter des membre a tant match'
+        );
+        abort_if(
+            count($userInvitations) >= 5,
+            403,
+            'Vous avez dépassé le nombre maximum d\'invitations'
+        );
+        abort_if(
+            $userInvitations->where('match_id', $match->id)->first(),
+            403,
+            'Vous avez déjà envoyé une invitation à ce match'
+        );
+        abort_if(
+            $match->matchMembres->where('utilisateur_id', $user->id)->first(),
+            403,
+            'Vous êtes déjà dans ce match'
+        );
 
         $nembre_joueur = $match->nembre_joueur;
         $matchMembres = $match->matchMembres->where('equipe', $request->equipe);
-        $numberInv = $request->has('InvClub') ? count($request->InvClub) : 0;
 
         abort_if(
             count($matchMembres) >= $nembre_joueur,
             403,
             'L\'équipe sélectionnée a déjà atteint le nombre maximum de joueurs pour ce match.'
         );
-        abort_if(
-            count($matchMembres) + $numberInv > $nembre_joueur,
-            403,
-            'L\'ajout de membres supplémentaires dépasserait le nombre maximum de joueurs pour ce match.'
-        );
+
 
         $matchDemamde = new MatchDemamde;
         $matchDemamde->utilisateur_id = $user->id;
         $matchDemamde->match_id = $match->id;
+        $matchDemamde->equipe = $request->equipe;
 
         if ($request->InvType == "solo") {
 
@@ -160,9 +171,37 @@ class MatchController extends Controller
             $matchDemamde->save();
         } else {
             //using club
-            abort_if($numberInv < 2, 403, 'vous doit acceder 2 membres ou plus');
-            $userClubRole = $user->clubMember->member_role;
+            $clubMembre = $user->clubMember;
+            abort_unless($clubMembre, 401);
+            //check if user club prop
+            $userClubRole = $clubMembre->member_role;
             abort_unless(($userClubRole == 'proprietaire' || $userClubRole == 'coproprietaire'), 401);
+            //validate request
+            $userClubId = $clubMembre->club_id;
+            $request->validate([
+                "InvClub.*" => [
+                    Rule::exists('club_members', 'id')->where('club_id', $userClubId),
+                    'distinct',
+                ],
+            ]);
+
+            $numberInv = $request->has('InvClub') ? count($request->InvClub) : 0;
+            abort_if(
+                count($matchMembres) + $numberInv > $nembre_joueur,
+                403,
+                'L\'ajout de membres supplémentaires dépasserait le nombre maximum de joueurs pour ce match.'
+            );
+
+            abort_if(
+                $numberInv < 2,
+                403,
+                'vous doit acceder 2 membres ou plus'
+            );
+            abort_if(
+                $match->matchMembres->where('club_id', $user->club_id)->first(),
+                403,
+                "Un membre de votre club est déjà dans ce match"
+            );
 
             $matchDemamde->invitation_type = 'club';
             $matchDemamde->save();
@@ -171,9 +210,64 @@ class MatchController extends Controller
             foreach ($clubMemberIds as $clubMemberId) {
                 $matchDemamdeUser = new MatchDemandeUser;
                 $matchDemamdeUser->club_member_id = $clubMemberId;
-                $matchDemamde->matchDemamdeUsers()->save($matchDemamdeUser);
+                $matchDemamde->demandeurs()->save($matchDemamdeUser);
             }
         }
         return response()->noContent();
+    }
+
+    public function AccepterInvitation(string $decision, string $demamde_id)
+    {
+        $user = auth()->user();
+
+        $matchDemande = MatchDemamde::find($demamde_id);
+        abort_if(!$matchDemande, 404);
+        $userDM = $matchDemande->utilisateur;
+
+        abort_if(
+            count($userDM->matchsMembre->where('date','>', Carbon::now())) >= 5,
+            403,
+            "$userDM->nom a dépassé la limite de participation aux matchs"
+        );
+
+        $match = $matchDemande->match;
+        abort_if($match->organisateur_id != $user->id, 401);
+
+
+        $equipeMembres = $match->matchMembres->where('equipe', $matchDemande->equipe); //group a ou b
+
+        $nombreAjouter = $matchDemande->invitation_type == "club" ? count($matchDemande->demandeurs) : 1;
+        abort_if(
+            count($equipeMembres) + $nombreAjouter > $match->nembre_joueur,
+            403,
+            "vous n'avez pas la capacité d'ajouter $nombreAjouter membre(s)"
+        );
+
+        if ($decision == "accepter") {
+            if ($matchDemande->invitation_type == "solo") {
+                MatchMembre::create([
+                    "utilisateur_id" => $userDM->id,
+                    "match_id" => $match->id,
+                    "equipe" => $matchDemande->equipe,
+                ]);
+            } else {
+                $matchDemandeurs = $matchDemande->demandeurs;
+                foreach ($matchDemandeurs as $matchDemandeur) {
+                    $clubInfo = $matchDemandeur->clubMembre;
+                    MatchMembre::create([
+                        "utilisateur_id" => $clubInfo->member_id,
+                        "match_id" => $match->id,
+                        "club_id" => $clubInfo->club_id,
+                        "equipe" => $matchDemande->equipe,
+                    ]);
+                }
+            }
+            $matchDemande->delete();
+            return response()->noContent(201);
+        } elseif ($decision == "refuser") {
+            $matchDemande->delete();
+            return response()->noContent();
+        }
+        abort(401);
     }
 }

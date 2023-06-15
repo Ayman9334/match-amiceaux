@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('match_demamde_id')->constrained('match_demamdes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreignId('createur_id')->nullable()->constrained('users');
+            $table->foreignId('dernier_editeur_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }
