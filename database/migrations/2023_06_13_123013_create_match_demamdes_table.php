@@ -19,6 +19,9 @@ return new class extends Migration
             $table->foreignId('match_id')->constrained('table_matches')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreignId("club_id")->nullable()->constrained("clubs")
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('equipe');
             $table->string('invitation_type');
             $table->foreignId('createur_id')->nullable()->constrained('users');

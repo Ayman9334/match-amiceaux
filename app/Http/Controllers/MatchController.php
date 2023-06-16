@@ -93,9 +93,10 @@ class MatchController extends Controller
         $match = TableMatch::find($id);
         abort_if(!$match, 404);
 
-        $dataEnvoyer = $match->only(['id', 'match_date', 'nembre_joueur', 'liue', 'lieu2', 'latitude', 'longitude', 'niveau', 'categorie', 'ligue', 'description']);
+        $dataEnvoyer = $match->only('id', 'match_date', 'nembre_joueur', 'lieu', 'lieu2', 'latitude', 'longitude', 'niveau', 'categorie', 'ligue', 'description');
+        $dataEnvoyer['organisateur'] = $match->organisateur->nom;
         $dataEnvoyer['medias'] = $match->matchMedias->pluck('media');
-        
+
         //get enums from code
         $enums = ['ligue', 'categorie', 'niveau'];
         foreach ($enums as $enum) {
@@ -105,11 +106,12 @@ class MatchController extends Controller
         if (!$user) return $dataEnvoyer;
 
         //get match membres
-        $dataEnvoyer['metchMembres'] = [
+        $dataEnvoyer['matchMembres'] = [
             "equipeA" => $match->matchMembres->where('equipe', 'A')->pluck('utilisateur.nom'),
             "equipeB" => $match->matchMembres->where('equipe', 'B')->pluck('utilisateur.nom'),
         ];
 
+        //check if user admin of a club
         $membreInf = $user->clubMember;
         $dataEnvoyer['clubAdmin'] = in_array($membreInf?->member_role, ['proprietaire', 'coproprietaire']);
 
@@ -141,8 +143,55 @@ class MatchController extends Controller
     }
 
     //NO CRUD
+    public function afficheUserMatch()
+    {
+        $user = auth()->user();
+        $userMatchs = $user->matchs;
 
-    public function EnvoyerInvitation(Request $request, string $match_id)
+        $dataEnv = $userMatchs->map(function ($match) {
+            $matchEnvInfo = $match->only('id', 'match_date', 'nembre_joueur', 'lieu', 'lieu2', 'niveau', 'categorie', 'ligue', 'description');
+
+            $matchEnvInfo["matchMembres"] =  [
+                "equipeA" => $match->matchMembres->where('equipe', "A")->map(function ($matchMembre) {
+                    return [
+                        "id" => $matchMembre->id,
+                        "nom" => $matchMembre->utilisateur->nom
+                    ];
+                }),
+                "equipeB" => $match->matchMembres->where('equipe', "B")->map(function ($matchMembre) {
+                    return [
+                        "id" => $matchMembre->id,
+                        "nom" => $matchMembre->utilisateur->nom
+                    ];
+                }),
+            ];
+
+            $matchEnvInfo['demandes'] = $match->matchDemamdes->map(function ($matchDemamde) {
+                $dmEnv = $matchDemamde->only('id', 'invitation_type', 'equipe');
+
+                if ($matchDemamde->invitation_type == "solo") {
+                    $dmEnv['demandeur'] = $matchDemamde->utilisateur->nom;
+                    return $dmEnv;
+                }
+
+                $dmEnv['demandeurs'] = $matchDemamde->demandeurs->map(fn ($demandeur) => $demandeur->clubMembre->member->nom);
+                return $dmEnv;
+            });
+
+            $enums = ['ligue', 'categorie', 'niveau'];
+            foreach ($enums as $enum) {
+                $matchEnvInfo[$enum] = TypeEnumsDetail::where('code', $match[$enum])->value('libelle');
+            }
+
+            return $matchEnvInfo;
+        });
+
+
+        return $dataEnv;
+    }
+
+
+    public function envoyerInvitation(Request $request, string $match_id)
     {
         $user = auth()->user();
         $match = TableMatch::find($match_id);
@@ -205,7 +254,7 @@ class MatchController extends Controller
             $userClubRole = $clubMembre->member_role;
             abort_unless(($userClubRole == 'proprietaire' || $userClubRole == 'coproprietaire'), 401);
             //validate request
-            $userClubId = $clubMembre->club_id;
+            $userClubId = $user->club_id;
             $request->validate([
                 "InvClub.*" => [
                     Rule::exists('club_members', 'id')->where('club_id', $userClubId),
@@ -217,7 +266,7 @@ class MatchController extends Controller
             abort_if(
                 count($matchMembres) + $numberInv > $nembre_joueur,
                 403,
-                'L\'ajout de membres supplémentaires dépasserait le nombre maximum de joueurs pour ce match.'
+                'L\'ajout de membres supplémentaires dépasserait le nombre maximum de joueurs pour ce euqipe.'
             );
 
             abort_if(
@@ -226,12 +275,23 @@ class MatchController extends Controller
                 'vous doit acceder 2 membres ou plus'
             );
             abort_if(
-                $match->matchMembres->where('club_id', $user->club_id)->first(),
+                $match->matchMembres->where('club_id', $userClubId)->first(),
                 403,
                 "Un membre de votre club est déjà dans ce match"
             );
+            abort_if(
+                $match->matchDemamdes->where('club_id', $userClubId)->first(),
+                403,
+                "Il y a déjà un demande avec ce club"
+            );
+            abort_if(
+                $match->organisateur->where('club_id', $userClubId)->first(),
+                403,
+                "l'organisateur du match est dans votre club"
+            );
 
             $matchDemamde->invitation_type = 'club';
+            $matchDemamde->club_id = $userClubId;
             $matchDemamde->save();
 
             $clubMemberIds = $request->InvClub;
@@ -244,7 +304,7 @@ class MatchController extends Controller
         return response()->noContent();
     }
 
-    public function AccepterInvitation(string $decision, string $demamde_id)
+    public function accepterInvitation(string $decision, string $demamde_id)
     {
         $user = auth()->user();
 

@@ -59,6 +59,7 @@ class AuthController extends Controller
     public function verifierToken(){
         $user = auth()->user();
         return [
+            'id' => $user->id,
             'nom' => $user->nom,
             'role' => $user->role,
         ];

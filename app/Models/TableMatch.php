@@ -23,5 +23,9 @@ class TableMatch extends Model
     {
         return $this->hasMany(MatchMembre::class,'match_id');
     }
-    
+    public function matchDemamdes()
+    {
+        return $this->hasMany(MatchDemamde::class,'match_id');
+    }
+
 }
