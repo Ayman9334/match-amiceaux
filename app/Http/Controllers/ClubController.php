@@ -94,7 +94,7 @@ class ClubController extends Controller
 
         if (!($clubRole === 'proprietaire' || $clubRole === 'coproprietaire')) return abort(401);
         if ($club->id !== $user->clubMember->club->id) return abort(401);
-        
+
         $club->update($updatedclub);
 
         return response()->noContent(204);
