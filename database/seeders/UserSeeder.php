@@ -14,6 +14,21 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $pw = bcrypt("Ayman123");
+        User::create([
+            "nom" => "Admin",
+            "email" => "admin@g.c",
+            "password" => $pw,
+            "n_telephone" => "0658322310",
+            "code_postal" => "80000",
+            "ville" => "Agadir",
+            "region" => "ARAreg",
+            "adresse" => "N1321 TYPE B SECT N AL MASSIRA AGADIR 80000",
+            "niveau" => "A1",
+            "categorie" => "u6cat",
+            "league" => "L1",
+            "role" => "admin"
+        ]);
+
         for ($i = 0; $i <= 5; $i++) {
             $e = $i == 0 ? null : $i;
             User::create([
@@ -30,5 +45,6 @@ class UserSeeder extends Seeder
                 "league" => "L1",
             ]);
         }
+
     }
 }

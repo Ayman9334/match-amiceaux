@@ -72,6 +72,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::controller(AdminController::class)->group(function () {
     Route::get('/members', 'index');
+    Route::get('/clubs', 'indexClub');
     Route::post('/members', 'createMember');
     Route::put('/members/{id}','updateMember');
     Route::delete('/members/{id}','deleteMember');
