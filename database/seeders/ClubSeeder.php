@@ -22,12 +22,12 @@ class ClubSeeder extends Seeder
         ]);
 
         ClubMember::create([
-            "member_id" => 1,
+            "member_id" => 2,
             "club_id" => 1,
             "member_role" => 'proprietaire',
         ]);
 
-        for ($i = 2; $i <= 6; $i++) {
+        for ($i = 3; $i <= 6; $i++) {
             ClubMember::create([
                 "member_id" => $i,
                 "club_id" => 1,
