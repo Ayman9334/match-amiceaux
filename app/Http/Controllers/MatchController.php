@@ -12,6 +12,7 @@ use App\Models\TableMatch;
 use App\Models\TypeEnumsDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class MatchController extends Controller
@@ -87,14 +88,41 @@ class MatchController extends Controller
 
     public function show(string $id)
     {
-        $match = TableMatch::find($id);
+        $user = Auth::guard('sanctum')->user();
 
+        $match = TableMatch::find($id);
         abort_if(!$match, 404);
 
-        $match['medias'] = $match->matchMedias->pluck('media');
-        unset($match['matchMedias']);
+        $dataEnvoyer = $match->only(['id', 'match_date', 'nembre_joueur', 'liue', 'lieu2', 'latitude', 'longitude', 'niveau', 'categorie', 'ligue', 'description']);
+        $dataEnvoyer['medias'] = $match->matchMedias->pluck('media');
+        
+        //get enums from code
+        $enums = ['ligue', 'categorie', 'niveau'];
+        foreach ($enums as $enum) {
+            $dataEnvoyer[$enum] = TypeEnumsDetail::where('code', $match[$enum])->value('libelle');
+        }
 
-        return $match;
+        if (!$user) return $dataEnvoyer;
+
+        //get match membres
+        $dataEnvoyer['metchMembres'] = [
+            "equipeA" => $match->matchMembres->where('equipe', 'A')->pluck('utilisateur.nom'),
+            "equipeB" => $match->matchMembres->where('equipe', 'B')->pluck('utilisateur.nom'),
+        ];
+
+        $membreInf = $user->clubMember;
+        $dataEnvoyer['clubAdmin'] = in_array($membreInf?->member_role, ['proprietaire', 'coproprietaire']);
+
+        if ($dataEnvoyer['clubAdmin']) {
+            $dataEnvoyer['clubMembres'] = $membreInf->club->clubMembers->map(function ($clubMembre) {
+                return [
+                    "membre_id" => $clubMembre->id,
+                    "nom" => $clubMembre->member->nom,
+                ];
+            });
+        }
+
+        return $dataEnvoyer;
     }
 
     public function edit(TableMatch $table_matche)
@@ -225,7 +253,7 @@ class MatchController extends Controller
         $userDM = $matchDemande->utilisateur;
 
         abort_if(
-            count($userDM->matchsMembre->where('date','>', Carbon::now())) >= 5,
+            count($userDM->matchsMembre->where('date', '>', Carbon::now())) >= 5,
             403,
             "$userDM->nom a dépassé la limite de participation aux matchs"
         );

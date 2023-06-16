@@ -17,4 +17,8 @@ class MatchMembre extends Model
     {
         return $this->belongsTo(TableMatch::class, 'match_id');
     }
+    public function utilisateur()
+    {
+        return $this->belongsTo(User::class, 'utilisateur_id');
+    }
 }
