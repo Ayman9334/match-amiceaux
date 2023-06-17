@@ -157,31 +157,38 @@ class MatchController extends Controller
                         "id" => $matchMembre->id,
                         "nom" => $matchMembre->utilisateur->nom
                     ];
-                }),
+                })->values(),
                 "equipeB" => $match->matchMembres->where('equipe', "B")->map(function ($matchMembre) {
                     return [
                         "id" => $matchMembre->id,
                         "nom" => $matchMembre->utilisateur->nom
                     ];
-                }),
+                })->values(),
             ];
 
-            $matchEnvInfo['demandes'] = $match->matchDemamdes->map(function ($matchDemamde) {
+            $demandes = $match->matchDemamdes->map(function ($matchDemamde) {
                 $dmEnv = $matchDemamde->only('id', 'invitation_type', 'equipe');
 
                 if ($matchDemamde->invitation_type == "solo") {
                     $dmEnv['demandeur'] = $matchDemamde->utilisateur->nom;
                     return $dmEnv;
                 }
-
+                $dmEnv['clubNom'] = $matchDemamde->club->nom_club;
                 $dmEnv['demandeurs'] = $matchDemamde->demandeurs->map(fn ($demandeur) => $demandeur->clubMembre->member->nom);
                 return $dmEnv;
             });
+
+            $matchEnvInfo["demandes"] = [
+                'equipeA' => $demandes->filter(fn ($demande) => $demande['equipe'] == 'A'),
+                'equipeB' => $demandes->filter(fn ($demande) => $demande['equipe'] == 'B'),
+            ];
 
             $enums = ['ligue', 'categorie', 'niveau'];
             foreach ($enums as $enum) {
                 $matchEnvInfo[$enum] = TypeEnumsDetail::where('code', $match[$enum])->value('libelle');
             }
+
+            $matchEnvInfo['media'] = $match->matchMedias->value('media');
 
             return $matchEnvInfo;
         });
@@ -254,7 +261,7 @@ class MatchController extends Controller
             $userClubRole = $clubMembre->member_role;
             abort_unless(($userClubRole == 'proprietaire' || $userClubRole == 'coproprietaire'), 401);
             //validate request
-            $userClubId = $user->club_id;
+            $userClubId = $clubMembre->club_id;
             $request->validate([
                 "InvClub.*" => [
                     Rule::exists('club_members', 'id')->where('club_id', $userClubId),
@@ -268,7 +275,6 @@ class MatchController extends Controller
                 403,
                 'L\'ajout de membres supplémentaires dépasserait le nombre maximum de joueurs pour ce euqipe.'
             );
-
             abort_if(
                 $numberInv < 2,
                 403,
@@ -285,10 +291,11 @@ class MatchController extends Controller
                 "Il y a déjà un demande avec ce club"
             );
             abort_if(
-                $match->organisateur->where('club_id', $userClubId)->first(),
+                $match->organisateur->clubMember->club_id == $userClubId,
                 403,
                 "l'organisateur du match est dans votre club"
             );
+
 
             $matchDemamde->invitation_type = 'club';
             $matchDemamde->club_id = $userClubId;

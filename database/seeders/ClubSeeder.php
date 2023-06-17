@@ -20,6 +20,11 @@ class ClubSeeder extends Seeder
             'proprietaire_id' => 1,
             'club_code' => Str::random(12)
         ]);
+        Club::create([
+            'nom_club' => 'hasaniya',
+            'proprietaire_id' => 8,
+            'club_code' => Str::random(12)
+        ]);
 
         ClubMember::create([
             "member_id" => 2,
@@ -27,10 +32,23 @@ class ClubSeeder extends Seeder
             "member_role" => 'proprietaire',
         ]);
 
-        for ($i = 3; $i <= 6; $i++) {
+        for ($i = 3; $i <= 7; $i++) {
             ClubMember::create([
                 "member_id" => $i,
                 "club_id" => 1,
+            ]);
+        }
+
+        ClubMember::create([
+            "member_id" => 8,
+            "club_id" => 2,
+            "member_role" => 'proprietaire',
+        ]);
+
+        for ($i = 9; $i <= 13; $i++) {
+            ClubMember::create([
+                "member_id" => $i,
+                "club_id" => 2,
             ]);
         }
     }

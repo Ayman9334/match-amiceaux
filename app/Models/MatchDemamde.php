@@ -21,4 +21,8 @@ class MatchDemamde extends Model
     {
         return $this->belongsTo(TableMatch::class, 'match_id');
     }
+    public function club()
+    {
+        return $this->belongsTo(Club::class, 'club_id');
+    }
 }
