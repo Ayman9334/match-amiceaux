@@ -179,8 +179,8 @@ class MatchController extends Controller
             });
 
             $matchEnvInfo["demandes"] = [
-                'equipeA' => $demandes->filter(fn ($demande) => $demande['equipe'] == 'A'),
-                'equipeB' => $demandes->filter(fn ($demande) => $demande['equipe'] == 'B'),
+                'equipeA' => $demandes->filter(fn ($demande) => $demande['equipe'] == 'A')->values(),
+                'equipeB' => $demandes->filter(fn ($demande) => $demande['equipe'] == 'B')->values(),
             ];
 
             $enums = ['ligue', 'categorie', 'niveau'];
@@ -364,5 +364,58 @@ class MatchController extends Controller
             return response()->noContent();
         }
         abort(401);
+    }
+
+    public function matchsParticipant()
+    {
+        $user = auth()->user();
+
+        $matchs = $user->matchsMembre->map(function ($matchMembre) use ($user) {
+            $match = $matchMembre->match;
+            $matchEnvInfo = $match->only('id', 'match_date', 'nembre_joueur', 'lieu', 'lieu2', 'latitude', 'longitude', 'niveau', 'categorie', 'ligue', 'description');
+
+            $matchEnvInfo["matchMembres"] =  [
+                "equipeA" => $match->matchMembres->where('equipe', "A")->pluck('utilisateur.nom')->values(),
+                "equipeB" => $match->matchMembres->where('equipe', "B")->pluck('utilisateur.nom')->values(),
+            ];
+
+            $enums = ['ligue', 'categorie', 'niveau'];
+            foreach ($enums as $enum) {
+                $matchEnvInfo[$enum] = TypeEnumsDetail::where('code', $match[$enum])->value('libelle');
+            }
+            $matchEnvInfo['media'] = $match->matchMedias->value('media');
+
+            $clubId = $match->matchMembres->where('utilisateur_id', $user->id)->value('club_id');
+
+            $matchEnvInfo['avecClub'] = (bool)$clubId;
+
+            return $matchEnvInfo;
+        });
+
+        return ['club_role' => $user->clubMember->member_role ?? null, 'matchs' => $matchs];
+    }
+
+    public function exitMatch(string $id)
+    {
+        $user = auth()->user();
+        $match = TableMatch::find($id);
+        abort_unless($match, 401);
+
+        $matchMembre = $match->matchMembres->where('utilisateur_id', $user->id)->first();
+
+        abort_unless($matchMembre, 401);
+
+        $avecClub = (bool)$matchMembre->club_id;
+        $userRole = $user->clubMember->member_role ?? null;
+
+        abort_unless(($avecClub && $userRole == "proprietaire") || !$avecClub, 401);
+
+        if ($avecClub) {
+            MatchMembre::where('club_id', $user->clubMember->club_id)->delete();
+        } else {
+            $matchMembre->delete();
+        }
+
+        return response()->noContent();
     }
 }

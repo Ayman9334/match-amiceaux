@@ -45,6 +45,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/match/affiche-user-matchs','afficheUserMatch');
         Route::get('/match/accepter-invitation/{decision}/{id}','accepterInvitation');
         Route::post('/match/envoyer-invitation/{id}','envoyerInvitation');
+        Route::get('/match/participant','matchsParticipant');
+        Route::get('/match/exit/{id}','exitMatch');
     });
 
     Route::controller(ClubController::class)->group(function () {
