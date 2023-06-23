@@ -268,7 +268,6 @@ class MatchController extends Controller
                     'distinct',
                 ],
             ]);
-
             $numberInv = $request->has('InvClub') ? count($request->InvClub) : 0;
             abort_if(
                 count($matchMembres) + $numberInv > $nembre_joueur,
@@ -290,12 +289,12 @@ class MatchController extends Controller
                 403,
                 "Il y a déjà un demande avec ce club"
             );
-            abort_if(
-                $match->organisateur->clubMember->club_id == $userClubId,
+            $orgClubMb = $match->organisateur->clubMember;
+            abort_unless(
+                !$orgClubMb || $orgClubMb->club_id != $userClubId,
                 403,
                 "l'organisateur du match est dans votre club"
             );
-
 
             $matchDemamde->invitation_type = 'club';
             $matchDemamde->club_id = $userClubId;

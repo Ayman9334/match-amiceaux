@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $elems = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
         $pw = bcrypt("Ayman123");
         User::create([
             "nom" => "Admin",
@@ -23,7 +24,7 @@ class UserSeeder extends Seeder
             "ville" => "Agadir",
             "region" => "ARAreg",
             "adresse" => "N1321 TYPE B SECT N AL MASSIRA AGADIR 80000",
-            "niveau" => "A1",
+            "niveau" => fake()->randomElement($elems),
             "categorie" => "u6cat",
             "league" => "L1",
             "role" => "admin"
@@ -40,7 +41,7 @@ class UserSeeder extends Seeder
                 "ville" => "Agadir",
                 "region" => "ARAreg",
                 "adresse" => "N1321 TYPE B SECT N AL MASSIRA AGADIR 80000",
-                "niveau" => "A1",
+                "niveau" => fake()->randomElement($elems),
                 "categorie" => "u6cat",
                 "league" => "L1",
             ]);
@@ -56,7 +57,7 @@ class UserSeeder extends Seeder
                 "ville" => "Agadir",
                 "region" => "ARAreg",
                 "adresse" => "N1321 TYPE B SECT N AL MASSIRA AGADIR 80000",
-                "niveau" => "A1",
+                "niveau" => fake()->randomElement($elems),
                 "categorie" => "u6cat",
                 "league" => "L1",
             ]);
@@ -72,7 +73,7 @@ class UserSeeder extends Seeder
                 "ville" => "Agadir",
                 "region" => "ARAreg",
                 "adresse" => "N1321 TYPE B SECT N AL MASSIRA AGADIR 80000",
-                "niveau" => "A1",
+                "niveau" => fake()->randomElement($elems),
                 "categorie" => "u6cat",
                 "league" => "L1",
             ]);
